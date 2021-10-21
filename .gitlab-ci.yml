@@ -1,0 +1,23 @@
+stages:
+  - build
+  - provisiondb
+  - deploy
+
+autotest:
+  allow_failure: true
+  stage: build
+  tags:
+    - docker
+  image: hub.gitlab.nixdev.co/java/internal/javaedu/ppp/automation-tests/ppp-autotest:0.5
+  script:
+    - /run.sh
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /^\[.*][\D\d]*/
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /^\[.*\|war][\D\d]*/
+  artifacts:
+    paths:
+      - out/*.zip
+  when: manual
