@@ -1,14 +1,15 @@
 package com.nixsolutions.crudapp.dao;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface BasicDao<E> {
 
-    void create(E entity);
+    void create(E entity) throws SQLException;
 
-    void update(E entity);
+    void update(E entity) throws SQLException;
 
-    void remove(E entity);
+    void remove(E entity) throws SQLException;
 
     List<E> findAll();
 
