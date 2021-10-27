@@ -14,6 +14,7 @@
         <logback.version>1.2.3</logback.version>
         <mysql.verson>8.0.25</mysql.verson>
         <rider.core.version>1.32.0</rider.core.version>
+        <rider.junit5.version>1.32.0</rider.junit5.version>
     </properties>
 
     <dependencies>
@@ -54,6 +55,20 @@
             <groupId>com.github.database-rider</groupId>
             <artifactId>rider-core</artifactId>
             <version>${rider.core.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.database-rider</groupId>
+            <artifactId>rider-junit5</artifactId>
+            <version>${rider.junit5.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dbunit</groupId>
+            <artifactId>dbunit</artifactId>
+            <version>2.7.0</version>
             <scope>test</scope>
         </dependency>
 
