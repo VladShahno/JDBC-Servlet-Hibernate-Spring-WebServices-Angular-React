@@ -1,6 +1,6 @@
 package com.nixsolutions.crudapp.entity;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class User {
 
@@ -80,8 +80,8 @@ public class User {
         return roleId;
     }
 
-    public void setRoleId(Long aRole) {
-        this.roleId = aRole;
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 
     public User(Long id, String login, String password, String email,
@@ -97,14 +97,14 @@ public class User {
     }
 
     public User(String login, String password, String email, String firstName,
-            String lastName, Date birthday, Long role) {
+            String lastName, Date birthday, Long roleId) {
         this.login = login;
         this.password = password;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthday = birthday;
-        this.roleId = role;
+        this.roleId = roleId;
     }
 
     public User() {

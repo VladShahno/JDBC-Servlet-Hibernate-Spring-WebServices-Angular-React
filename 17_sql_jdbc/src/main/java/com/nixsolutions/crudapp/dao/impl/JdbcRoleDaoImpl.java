@@ -4,6 +4,9 @@ import com.nixsolutions.crudapp.dao.RoleDao;
 import com.nixsolutions.crudapp.db.ConnectionInitializer;
 import com.nixsolutions.crudapp.entity.Role;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,24 +17,27 @@ import java.util.List;
 
 public class JdbcRoleDaoImpl implements RoleDao {
 
+    private static final Logger log = LoggerFactory.getLogger("log");
+
     private static final String INSERT_ROLE_SQL =
             "INSERT INTO ROLES" + "(name) VALUES " + " (?);";
 
-    private static final String SELECT_ROLE_BY_ID = "SELECT id, name FROM ROLES where id =?";
+    private static final String SELECT_ROLE_BY_ID = "SELECT id, name FROM ROLES WHERE id =?;";
 
-    private static final String SELECT_ROLE_BY_NAME = "SELECT id, name FROM ROLES where name =?";
+    private static final String SELECT_ROLE_BY_NAME = "SELECT id, name FROM ROLES WHERE name =?;";
 
-    private static final String UPDATE_ROLE = "UPDATE ROLES set name =? where id =?;";
+    private static final String UPDATE_ROLE = "UPDATE ROLES set name =? WHERE id =?;";
 
-    private static final String SELECT_ALL_USERS = "SELECT * FROM ROLES";
+    private static final String SELECT_ALL_ROLES = "SELECT * FROM ROLES;";
 
-    private static final String REMOVE_ROLE_SQL = "DELETE FROM ROLES where id = ?;";
+    private static final String REMOVE_ROLE_SQL = "DELETE FROM ROLES WHERE id = ?;";
 
     Connection connection = null;
     PreparedStatement preparedStatement = null;
 
     @Override
     public void create(Role role) throws SQLException {
+
         try {
 
             DataSource dataSource = ConnectionInitializer.getDataSource();
@@ -43,15 +49,18 @@ public class JdbcRoleDaoImpl implements RoleDao {
 
             preparedStatement.executeUpdate();
             connection.commit();
+            preparedStatement.close();
+
+            log.info(role + " was created!");
         } catch (SQLException e) {
             connection.rollback();
-            throw new RuntimeException(e);
+            log.warn("Role not created!", e);
         } finally {
             try {
                 if (connection != null)
                     connection.close();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                log.warn("Can't close connection!", e);
             }
         }
     }
@@ -70,7 +79,11 @@ public class JdbcRoleDaoImpl implements RoleDao {
 
             preparedStatement.executeUpdate();
             connection.commit();
+            preparedStatement.close();
+
+            log.info(role + " was updated!");
         } catch (SQLException e) {
+            log.warn(role + " was not updated!", e);
             connection.rollback();
             throw new RuntimeException(e);
         } finally {
@@ -78,7 +91,7 @@ public class JdbcRoleDaoImpl implements RoleDao {
                 if (connection != null)
                     connection.close();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                log.warn("Can't close connection!", e);
             }
         }
     }
@@ -96,7 +109,11 @@ public class JdbcRoleDaoImpl implements RoleDao {
 
             preparedStatement.executeUpdate();
             connection.commit();
+            preparedStatement.close();
+
+            log.info(role + " was deleted!");
         } catch (SQLException e) {
+            log.warn(role + " was not deleted!", e);
             connection.rollback();
             throw new RuntimeException(e);
         } finally {
@@ -104,7 +121,7 @@ public class JdbcRoleDaoImpl implements RoleDao {
                 if (connection != null)
                     connection.close();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                log.warn("Can't close connection!", e);
             }
         }
     }
@@ -116,7 +133,7 @@ public class JdbcRoleDaoImpl implements RoleDao {
         try {
             DataSource dataSource = ConnectionInitializer.getDataSource();
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement(SELECT_ALL_USERS);
+            preparedStatement = connection.prepareStatement(SELECT_ALL_ROLES);
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -124,9 +141,20 @@ public class JdbcRoleDaoImpl implements RoleDao {
                 Long id = resultSet.getLong("id");
                 String name = resultSet.getString("name");
                 roles.add(new Role(id, name));
+
+                log.info("All Roles were found!");
             }
+            preparedStatement.close();
+            resultSet.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            log.warn("Can't find Roles!", e);
+        } finally {
+            try {
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException e) {
+                log.warn("Can't close connection!", e);
+            }
         }
         return roles;
     }
@@ -146,9 +174,20 @@ public class JdbcRoleDaoImpl implements RoleDao {
             if (resultSet.next()) {
                 String name = resultSet.getString("name");
                 role = new Role(id, name);
+
+                log.info(role + " was found!");
             }
+            preparedStatement.close();
+            resultSet.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            log.warn(role + " was not found!", e);
+        } finally {
+            try {
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException e) {
+                log.warn("Can't close connection!", e);
+            }
         }
         return role;
     }
@@ -169,9 +208,20 @@ public class JdbcRoleDaoImpl implements RoleDao {
             while (resultSet.next()) {
                 Long id = resultSet.getLong("id");
                 role = new Role(id, name);
+
+                log.info(role + " was found!");
             }
+            preparedStatement.close();
+            resultSet.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            log.warn(role + " was not found!", e);
+        } finally {
+            try {
+                if (connection != null)
+                    connection.close();
+            } catch (SQLException e) {
+                log.warn("Can't close connection!", e);
+            }
         }
         return role;
     }
