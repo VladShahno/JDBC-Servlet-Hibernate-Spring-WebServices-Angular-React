@@ -8,6 +8,7 @@ import com.nixsolutions.crudapp.util.DataBaseCreator;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.List;
 
 public class MainApp {
 
@@ -17,7 +18,7 @@ public class MainApp {
         JdbcRoleDaoImpl jdbcRoleDao = new JdbcRoleDaoImpl();
 
         DataBaseCreator dataBaseCreator = new DataBaseCreator();
-        dataBaseCreator.createTableSql();
+        //dataBaseCreator.createTableSql();
 
         Date date = new Date(1999 / 03 / 10);
 
@@ -30,29 +31,22 @@ public class MainApp {
         jdbcRoleDao.create(roleAdmin);
         jdbcRoleDao.create(roleUser);
 
-        role = jdbcRoleDao.findByName("User");
+        //role = jdbcRoleDao.findByName("User");
 
-        USER = jdbcUserDao.findByEmail("email");
+        User user = new User(1L,"Vlados", "1234", "email", "Vlad", "Shakhno", date,
+                roleUser.getId());
 
-        User user = new User("Vlados", "1234", "email", "Vlad", "Shakhno", date,
-                role.getId());
+        User user1 = new User("NIX", "1234", "email1", "Vlad", "Shakhno", date,
+                roleAdmin.getId());
 
-        User user1 = new User("Vlados", "1234", "email1", "Vlad", "Shakhno", date,
-                role.getId());
+        User updatedUser = new User("WAS UPDATED", "1234", "email", "Vlad",
+                "Shakhno", date, roleUser.getId());
 
+//        jdbcUserDao.create(user);
+//        jdbcUserDao.create(user1);
+//        jdbcUserDao.create(updatedUser);
 
-        //        jdbcUserDao.create(user);
-        //        Role role1 = new Role("JOO");
-        //jdbcRoleDao.update(roleAdmin);
-
-        Role r2 = new Role();
-
-        r2 =  jdbcRoleDao.findById(1L);
-        System.out.println(r2);
-        //jdbcRoleDao.remove(r2);
-        System.out.println(r2);
-        System.out.println(USER);
-
-       // System.out.println(role.getName());
+       jdbcUserDao.remove(user);
+       // jdbcUserDao.update(user1);
     }
 }
