@@ -13,6 +13,7 @@
         <h2database.version>1.4.200</h2database.version>
         <logback.version>1.2.3</logback.version>
         <mysql.verson>8.0.25</mysql.verson>
+        <rider.core.version>1.32.0</rider.core.version>
     </properties>
 
     <dependencies>
@@ -48,6 +49,14 @@
             <artifactId>logback-core</artifactId>
             <version>${logback.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.database-rider</groupId>
+            <artifactId>rider-core</artifactId>
+            <version>${rider.core.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
