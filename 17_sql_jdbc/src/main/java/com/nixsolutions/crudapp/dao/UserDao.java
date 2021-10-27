@@ -11,10 +11,10 @@ public interface UserDao extends BasicDao<User> {
     void create(User user) throws SQLException;
 
     @Override
-    void update(User user);
+    void update(User user) throws SQLException;
 
     @Override
-    void remove(User user);
+    void remove(User user) throws SQLException;
 
     @Override
     List<User> findAll();
