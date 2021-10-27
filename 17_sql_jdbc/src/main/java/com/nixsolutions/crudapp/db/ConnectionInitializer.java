@@ -17,7 +17,7 @@ public class ConnectionInitializer {
             Properties properties = new Properties();
 
             InputStream inputStream = ConnectionInitializer.class.getClassLoader()
-                    .getResourceAsStream("jdbc.properties");
+                    .getResourceAsStream("app.properties");
             if (inputStream == null) {
                 throw new IOException("File not found");
             }
