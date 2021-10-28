@@ -21,9 +21,9 @@ public class UserDaoImplTest extends DbConfig {
     private static final String UPDATE_USER_XML = "src/test/java/resources/dataset/user/update-user.xml";
     private static final String REMOVE_USER_XML = "src/test/java/resources/dataset/user/remove-user.xml";
     private static final String FIND_BY_LOGIN_USER_XML = "src/test/java/resources/dataset/user/find-login-user.xml";
-    private static final String FIND_BY_EMAIL_USER_XML = "src/test/java/resources/dataset/user/find-EMAIL-user.xml";
+    private static final String FIND_BY_EMAIL_USER_XML = "src/test/java/resources/dataset/user/find-email-user.xml";
     private static final String FIND_ALL_USERS_XML = "src/test/java/resources/dataset/user/findall-user.xml";
-    private static final String TABLE_USERS = "USERS";
+    private static final String TABLE_USERS = "USER";
     private static final String[] IGNORE_COLS = { "user_id" };
     private UserDao userDao;
 

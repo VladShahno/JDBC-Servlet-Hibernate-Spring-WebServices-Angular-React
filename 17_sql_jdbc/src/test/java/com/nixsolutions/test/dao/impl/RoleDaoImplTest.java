@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 public class RoleDaoImplTest extends DbConfig {
 
     private static final String[] IGNORE_COLS = { "role_id" };
-    private static final String TABLE_ROLES = "ROLES";
+    private static final String TABLE_ROLES = "ROLE";
     private static final String FIND_ROLE_XML = "src/test/java/resources/dataset/role/find-role.xml";
     private static final String UPDATE_ROLE_XML = "src/test/java/resources/dataset/role/update-role.xml";
     private static final String SAVE_ROLE_XML = "src/test/java/resources/dataset/role/save-role.xml";
@@ -70,7 +70,7 @@ public class RoleDaoImplTest extends DbConfig {
 
         ITable expectedTable = getExpectedTable(FIND_ROLE_XML, TABLE_ROLES);
 
-        assertEquals(expectedTable.getValue(0, "ROLE_NAME"), actual.getName());
+        assertEquals(expectedTable.getValue(0, "role_name"), actual.getName());
     }
 
 }

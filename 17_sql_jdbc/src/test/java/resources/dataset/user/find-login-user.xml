@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dataset>
-    <USER user_id="1" login="ad" password="ad" email="ad@gmail.com"
-          first_name="Serhii" last_name="Yevt" birthday="1993-07-28"
-          role_id="1"/>
+    <USER USER_ID="1" LOGIN="ad" PASSWORD="ad" EMAIL="ad@gmail.com"
+          FIRST_NAME="Serhii" LAST_NAME="Yevt" BIRTHDAY="1993-07-28"
+          ROLE_ID="1"/>
 </dataset>
