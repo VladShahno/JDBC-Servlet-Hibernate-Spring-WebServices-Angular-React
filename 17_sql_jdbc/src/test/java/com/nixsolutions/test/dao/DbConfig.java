@@ -1,7 +1,6 @@
 package com.nixsolutions.test.dao;
 
 import com.nixsolutions.crudapp.util.DataSourceUtil;
-
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -21,8 +20,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DbConfig {
-    private String starterTableXml = "src/test/resources/dataset/starterTable.xml";
-    private String ddlSql = "src/test/resources/sql/DDL.sql";
+    private String starterTableXml = "src/test/java/resources/dataset/starterTable.xml";
+    private String ddlSql = "src/test/java/resources/sql/DDL.sql";
     private String dbPropertiesFile = "src/test/java/resources/app.test.properties";
     public DataSourceUtil dataSource;
 
