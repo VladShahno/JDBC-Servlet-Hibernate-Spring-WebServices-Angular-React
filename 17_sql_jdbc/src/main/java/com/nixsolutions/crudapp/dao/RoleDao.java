@@ -3,7 +3,6 @@ package com.nixsolutions.crudapp.dao;
 import com.nixsolutions.crudapp.entity.Role;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public interface RoleDao extends BasicDao<Role> {
 

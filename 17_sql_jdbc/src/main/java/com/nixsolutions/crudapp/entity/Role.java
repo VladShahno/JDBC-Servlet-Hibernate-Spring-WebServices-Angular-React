@@ -1,7 +1,5 @@
 package com.nixsolutions.crudapp.entity;
 
-import java.util.Objects;
-
 public class Role {
 
     private Long id;

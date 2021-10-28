@@ -1,7 +1,6 @@
 package com.nixsolutions.crudapp.dao;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public interface BasicDao<E> {
 
