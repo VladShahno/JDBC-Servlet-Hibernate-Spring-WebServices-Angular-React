@@ -22,13 +22,13 @@ public class JdbcRoleDaoImpl extends AbstractJdbcDao implements RoleDao {
     private static final Logger log = LoggerFactory.getLogger("log");
 
     private static final String INSERT_ROLE_SQL =
-            "INSERT INTO ROLES" + "(name) VALUES " + " (?);";
+            "INSERT INTO ROLES" + "(role_name) VALUES " + " (?);";
 
-    private static final String SELECT_ROLE_BY_NAME = "SELECT id, name FROM ROLES WHERE name =?;";
+    private static final String SELECT_ROLE_BY_NAME = "SELECT role_id, role_name FROM ROLES WHERE role_name =?;";
 
-    private static final String UPDATE_ROLE = "UPDATE ROLES set name =? WHERE id =?;";
+    private static final String UPDATE_ROLE = "UPDATE ROLES set role_name =? WHERE role_id =?;";
 
-    private static final String REMOVE_ROLE_SQL = "DELETE FROM ROLES WHERE id = ?;";
+    private static final String REMOVE_ROLE_SQL = "DELETE FROM ROLES WHERE role_id = ?;";
 
     @Override
     public void create(Role role) {
@@ -108,8 +108,8 @@ public class JdbcRoleDaoImpl extends AbstractJdbcDao implements RoleDao {
                 Role role = new Role();
                 resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    role.setId(resultSet.getLong("id"));
-                    role.setName(resultSet.getString("name"));
+                    role.setId(resultSet.getLong("role_id"));
+                    role.setName(resultSet.getString("role_name"));
                 }
                 connection.commit();
                 log.info(role + " was found!");

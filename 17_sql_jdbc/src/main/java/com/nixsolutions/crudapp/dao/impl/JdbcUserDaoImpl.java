@@ -23,17 +23,17 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
             + "  (login, password, email, firstName, lastName, birthday, role_id) VALUES "
             + " (?, ?, ?, ?, ?, ?, ?);";
 
-    private static final String SELECT_USER_BY_EMAIL = "SELECT id, login, password, email, firstName, lastName, birthday, role_id FROM USERS WHERE email =?;";
+    private static final String SELECT_USER_BY_EMAIL = "SELECT user_id, login, password, email, first_name, last_name, birthday, role_id FROM USERS WHERE email =?;";
 
-    private static final String SELECT_USER_BY_LOGIN = "SELECT id, login, password, email, firstName, lastName, birthday, role_id FROM USERS WHERE login =?;";
+    private static final String SELECT_USER_BY_LOGIN = "SELECT user_id, login, password, email, first_name, last_name, birthday, role_id FROM USERS WHERE login =?;";
 
-    private static final String SELECT_USER_BY_ID = "SELECT id, login, password, email, firstName, lastName, birthday, role_id FROM USERS WHERE id =?;";
+    private static final String SELECT_USER_BY_ID = "SELECT user_id, login, password, email, first_name, last_name, birthday, role_id FROM USERS WHERE user_id =?;";
 
     private static final String SELECT_ALL_USERS = "SELECT * FROM USERS;";
 
-    private static final String UPDATE_USER = "UPDATE USERS set login=?, password=?, email=?, firstName=?, lastName=?, birthday=?, role_id=? WHERE id =?;";
+    private static final String UPDATE_USER = "UPDATE USERS set login=?, password=?, email=?, first_name=?, last_name=?, birthday=?, role_id=? WHERE user_id =?;";
 
-    private static final String REMOVE_USER_SQL = "DELETE FROM USERS WHERE id =?;";
+    private static final String REMOVE_USER_SQL = "DELETE FROM USERS WHERE user_id =?;";
 
     @Override
     public void create(User user) {
@@ -249,12 +249,12 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
 
     private User getUser(ResultSet resultSet) throws SQLException {
         User user = new User();
-        user.setId(resultSet.getLong("id"));
+        user.setId(resultSet.getLong("user_id"));
         user.setLogin(resultSet.getString("login"));
         user.setPassword(resultSet.getString("password"));
         user.setEmail(resultSet.getString("email"));
-        user.setFirstName(resultSet.getString("firstName"));
-        user.setLastName(resultSet.getString("lastName"));
+        user.setFirstName(resultSet.getString("first_name"));
+        user.setLastName(resultSet.getString("last_name"));
         user.setBirthday(resultSet.getDate("birthday"));
         user.setRoleId(resultSet.getLong("role_id"));
         return user;
