@@ -3,6 +3,7 @@ package com.nixsolutions.crudapp.dao.impl;
 import com.nixsolutions.crudapp.dao.AbstractJdbcDao;
 import com.nixsolutions.crudapp.dao.RoleDao;
 import com.nixsolutions.crudapp.exception.DataProcessingException;
+import com.nixsolutions.crudapp.util.ConnectionManager;
 import com.nixsolutions.crudapp.util.DataSourceUtil;
 import com.nixsolutions.crudapp.entity.Role;
 
@@ -19,6 +20,8 @@ import java.util.List;
 
 public class JdbcRoleDaoImpl extends AbstractJdbcDao implements RoleDao {
 
+    private ConnectionManager connectionManager;
+
     private static final Logger log = LoggerFactory.getLogger("log");
 
     private static final String INSERT_ROLE_SQL =
@@ -30,103 +33,103 @@ public class JdbcRoleDaoImpl extends AbstractJdbcDao implements RoleDao {
 
     private static final String REMOVE_ROLE_SQL = "DELETE FROM ROLES WHERE role_id = ?;";
 
+    public JdbcRoleDaoImpl() {
+        connectionManager = new ConnectionManager();
+    }
+
     @Override
     public void create(Role role) {
-        try (Connection connection = createConnection()) {
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = createConnection();
             connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection.prepareStatement(
-                    INSERT_ROLE_SQL)) {
-                statement.setString(1, role.getName());
-                statement.executeUpdate();
-                connection.commit();
-                log.info(role + " was created!");
-            } catch (SQLException e) {
-                connection.rollback();
-                throw new DataProcessingException(e);
-            }
+            statement = connection.prepareStatement(INSERT_ROLE_SQL);
+            statement.setString(1, role.getName());
+            statement.executeUpdate();
+            connection.commit();
+            log.trace("Role was created " + role);
         } catch (SQLException e) {
-            log.warn("Role not created!", e);
+            log.error("Cannot create role", e);
+            connectionManager.rollback(connection);
             throw new DataProcessingException(e);
-        } catch (DataProcessingException dataProcessingException) {
-            throw dataProcessingException;
+        } finally {
+            connectionManager.finish(statement, connection, null);
         }
     }
 
     @Override
     public void update(Role role) {
-        try (Connection connection = createConnection()) {
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = createConnection();
             connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection.prepareStatement(
-                    UPDATE_ROLE)) {
-                statement.setString(1, role.getName());
-                statement.setLong(2, role.getId());
-                statement.executeUpdate();
-                connection.commit();
-                log.info(role + " was updated!");
-            } catch (SQLException e) {
-                connection.rollback();
-                throw new DataProcessingException(e);
-            }
-        } catch (DataProcessingException dataProcessingException) {
-            throw dataProcessingException;
+            statement = connection.prepareStatement(UPDATE_ROLE);
+            statement.setString(1, role.getName());
+            statement.setLong(2, role.getId());
+            statement.executeUpdate();
+            connection.commit();
+            log.info("Role was updated " + role);
         } catch (SQLException e) {
-            log.warn(role + " was not updated!", e);
+            log.error("Cannot update role " + role, e);
+            connectionManager.rollback(connection);
             throw new DataProcessingException(e);
+        } finally {
+            connectionManager.finish(statement, connection, null);
         }
     }
 
     @Override
     public void remove(Role role) {
-        try (Connection connection = createConnection()) {
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = createConnection();
             connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection.prepareStatement(
-                    REMOVE_ROLE_SQL)) {
-                statement.setString(1, role.getName());
-                statement.executeUpdate();
-                connection.commit();
-                log.info(role + " was deleted!");
-            } catch (SQLException e) {
-                connection.rollback();
-                throw new DataProcessingException(e);
-            }
-        } catch (DataProcessingException dataProcessingException) {
-            throw dataProcessingException;
+            statement = connection.prepareStatement(REMOVE_ROLE_SQL);
+            statement.setString(1, role.getName());
+            statement.executeUpdate();
+            connection.commit();
+            log.info("Role was removed " + role);
         } catch (SQLException e) {
-            log.warn(role + " was not deleted!", e);
+            log.error("Cannot remove role " + role, e);
+            connectionManager.rollback(connection);
             throw new DataProcessingException(e);
+        } finally {
+            connectionManager.finish(statement, connection, null);
         }
     }
 
     @Override
     public Role findByName(String name) {
+
+        Connection connection = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
-        try (Connection connection = createConnection()) {
+        try {
+            connection = createConnection();
             connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection.prepareStatement(
-                    SELECT_ROLE_BY_NAME)) {
-                statement.setString(1, name);
-                Role role = new Role();
-                resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    role.setId(resultSet.getLong("role_id"));
-                    role.setName(resultSet.getString("role_name"));
-                }
-                connection.commit();
-                log.info(role + " was found!");
-                return role;
-            } catch (SQLException e) {
-                connection.rollback();
-                throw new DataProcessingException(e);
-            } finally {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
+            statement = connection.prepareStatement(SELECT_ROLE_BY_NAME);
+            statement.setString(1, name);
+            resultSet = statement.executeQuery();
+            Role role = new Role();
+            while (resultSet.next()) {
+                role.setId(resultSet.getLong("role_id"));
+                role.setName(resultSet.getString("role_name"));
             }
-        } catch (DataProcessingException dataProcessingException) {
-            throw dataProcessingException;
+            connection.commit();
+            log.info("Role found " + role);
+            return role;
         } catch (SQLException e) {
-            log.warn(name + " was not found!", e);
+            log.error("Cannot find role by name " + name, e);
+            connectionManager.rollback(connection);
             throw new DataProcessingException(e);
+        } finally {
+            connectionManager.finish(statement, connection, resultSet);
         }
     }
 }
