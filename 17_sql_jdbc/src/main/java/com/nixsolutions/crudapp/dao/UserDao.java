@@ -16,10 +16,8 @@ public interface UserDao extends BasicDao<User> {
     @Override
     void remove(User user) throws SQLException;
 
-    @Override
     List<User> findAll();
 
-    @Override
     User findById(Long id);
 
     User findByLogin(String login);

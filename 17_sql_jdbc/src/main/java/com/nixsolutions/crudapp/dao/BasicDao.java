@@ -10,8 +10,4 @@ public interface BasicDao<E> {
     void update(E entity) throws SQLException;
 
     void remove(E entity) throws SQLException;
-
-    List<E> findAll();
-
-    E findById(Long id);
 }

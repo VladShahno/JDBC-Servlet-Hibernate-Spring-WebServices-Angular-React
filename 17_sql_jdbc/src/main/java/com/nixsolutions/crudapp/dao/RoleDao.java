@@ -16,11 +16,5 @@ public interface RoleDao extends BasicDao<Role> {
     @Override
     void remove(Role entity) throws SQLException;
 
-    @Override
-    List<Role> findAll();
-
-    @Override
-    Role findById(Long id);
-
     Role findByName(String name);
 }
