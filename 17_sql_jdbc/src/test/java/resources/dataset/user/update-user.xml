@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+    <USER user_id="1" login="admin" password="54321" email="ad@gmail.com"
+          first_name="Serhii" last_name="Yevtushok" birthday="1993-07-28"
+          role_id="1"/>
+    <USER user_id="2" login="user" password="user" email="customer@gmail.com"
+          first_name="firstF" last_name="firstS" birthday="1980-01-01"
+          role_id="2"/>
+</dataset>
