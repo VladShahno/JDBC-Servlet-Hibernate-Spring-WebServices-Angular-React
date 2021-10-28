@@ -22,21 +22,21 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
 
     private static final Logger log = LoggerFactory.getLogger("log");
 
-    private static final String INSERT_USERS_SQL = "INSERT INTO USERS"
-            + "  (login, password, email, firstName, lastName, birthday, role_id) VALUES "
+    private static final String INSERT_USERS_SQL = "INSERT INTO USER"
+            + "  (login, password, email, first_name, last_name, birthday, role_id) VALUES "
             + " (?, ?, ?, ?, ?, ?, ?);";
 
-    private static final String SELECT_USER_BY_EMAIL = "SELECT user_id, login, password, email, first_name, last_name, birthday, role_id FROM USERS WHERE email =?;";
+    private static final String SELECT_USER_BY_EMAIL = "SELECT user_id, login, password, email, first_name, last_name, birthday, role_id FROM USER WHERE email =?;";
 
-    private static final String SELECT_USER_BY_LOGIN = "SELECT user_id, login, password, email, first_name, last_name, birthday, role_id FROM USERS WHERE login =?;";
+    private static final String SELECT_USER_BY_LOGIN = "SELECT user_id, login, password, email, first_name, last_name, birthday, role_id FROM USER WHERE login =?;";
 
-    private static final String SELECT_USER_BY_ID = "SELECT user_id, login, password, email, first_name, last_name, birthday, role_id FROM USERS WHERE user_id =?;";
+    private static final String SELECT_USER_BY_ID = "SELECT user_id, login, password, email, first_name, last_name, birthday, role_id FROM USER WHERE user_id =?;";
 
-    private static final String SELECT_ALL_USERS = "SELECT * FROM USERS;";
+    private static final String SELECT_ALL_USERS = "SELECT * FROM USER;";
 
-    private static final String UPDATE_USER = "UPDATE USERS set login=?, password=?, email=?, first_name=?, last_name=?, birthday=?, role_id=? WHERE user_id =?;";
+    private static final String UPDATE_USER = "UPDATE USER set login=?, password=?, email=?, first_name=?, last_name=?, birthday=?, role_id=? WHERE user_id =?;";
 
-    private static final String REMOVE_USER_SQL = "DELETE FROM USERS WHERE user_id =?;";
+    private static final String REMOVE_USER_SQL = "DELETE FROM USER WHERE user_id =?;";
 
     public JdbcUserDaoImpl() {
         connectionManager = new ConnectionManager();
@@ -239,14 +239,14 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
     private User getUser(ResultSet resultSet) throws SQLException {
 
         User user = new User();
-        user.setId(resultSet.getLong("user_id"));
-        user.setLogin(resultSet.getString("login"));
-        user.setPassword(resultSet.getString("password"));
-        user.setEmail(resultSet.getString("email"));
-        user.setFirstName(resultSet.getString("first_name"));
-        user.setLastName(resultSet.getString("last_name"));
-        user.setBirthday(resultSet.getDate("birthday"));
-        user.setRoleId(resultSet.getLong("role_id"));
+        user.setId(resultSet.getLong("USER_ID"));
+        user.setLogin(resultSet.getString("LOGIN"));
+        user.setPassword(resultSet.getString("PASSWORD"));
+        user.setEmail(resultSet.getString("EMAIL"));
+        user.setFirstName(resultSet.getString("FIRST_NAME"));
+        user.setLastName(resultSet.getString("LAST_NAME"));
+        user.setBirthday(resultSet.getDate("BIRTHDAY"));
+        user.setRoleId(resultSet.getLong("ROLE_ID"));
         return user;
     }
 }
