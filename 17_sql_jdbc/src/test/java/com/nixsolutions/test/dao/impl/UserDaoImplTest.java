@@ -17,14 +17,14 @@ import static org.dbunit.Assertion.assertEqualsIgnoreCols;
 import static org.junit.Assert.assertEquals;
 
 public class UserDaoImplTest extends DbConfig {
-    private static final String SAVE_USER_XML = "src/test/resources/dataset/user/save-user.xml";
-    private static final String UPDATE_USER_XML = "src/test/resources/dataset/user/update-user.xml";
-    private static final String REMOVE_USER_XML = "src/test/resources/dataset/user/remove-user.xml";
-    private static final String FIND_BY_LOGIN_USER_XML = "src/test/resources/dataset/user/find-login-user.xml";
-    private static final String FIND_BY_EMAIL_USER_XML = "src/test/resources/dataset/user/find-EMAIL-user.xml";
-    private static final String FIND_ALL_USERS_XML = "src/test/resources/dataset/user/findall-user.xml";
-    private static final String TABLE_USER = "USER";
-    private static final String[] IGNORE_COLS = { "USER_ID" };
+    private static final String SAVE_USER_XML = "src/test/java/resources/dataset/user/save-user.xml";
+    private static final String UPDATE_USER_XML = "src/test/java/resources/dataset/user/update-user.xml";
+    private static final String REMOVE_USER_XML = "src/test/java/resources/dataset/user/remove-user.xml";
+    private static final String FIND_BY_LOGIN_USER_XML = "src/test/java/resources/dataset/user/find-login-user.xml";
+    private static final String FIND_BY_EMAIL_USER_XML = "src/test/java/resources/dataset/user/find-EMAIL-user.xml";
+    private static final String FIND_ALL_USERS_XML = "src/test/java/resources/dataset/user/findall-user.xml";
+    private static final String TABLE_USERS = "USERS";
+    private static final String[] IGNORE_COLS = { "user_id" };
     private UserDao userDao;
 
     @BeforeClass
@@ -43,8 +43,8 @@ public class UserDaoImplTest extends DbConfig {
         userDao.create(
                 new User("Log3", "Pass3", "e3@gmail.com", "Name3", "LastName3",
                         Date.valueOf("1999-09-09"), 1L));
-        ITable expected = getExpectedTable(SAVE_USER_XML, TABLE_USER);
-        ITable actual = getActualTable(TABLE_USER);
+        ITable expected = getExpectedTable(SAVE_USER_XML, TABLE_USERS);
+        ITable actual = getActualTable(TABLE_USERS);
         assertEqualsIgnoreCols(expected, actual, IGNORE_COLS);
     }
 
@@ -55,8 +55,8 @@ public class UserDaoImplTest extends DbConfig {
         user.setId(1L);
         userDao.update(user);
 
-        ITable expected = getExpectedTable(UPDATE_USER_XML, TABLE_USER);
-        ITable actual = getActualTable(TABLE_USER);
+        ITable expected = getExpectedTable(UPDATE_USER_XML, TABLE_USERS);
+        ITable actual = getActualTable(TABLE_USERS);
 
         assertEqualsIgnoreCols(expected, actual, IGNORE_COLS);
     }
@@ -67,15 +67,15 @@ public class UserDaoImplTest extends DbConfig {
         user.setId(2L);
         userDao.remove(user);
 
-        ITable expected = getExpectedTable(REMOVE_USER_XML, TABLE_USER);
-        ITable actual = getActualTable(TABLE_USER);
+        ITable expected = getExpectedTable(REMOVE_USER_XML, TABLE_USERS);
+        ITable actual = getActualTable(TABLE_USERS);
         assertEqualsIgnoreCols(expected, actual, IGNORE_COLS);
     }
 
     @Test
     public void findAll() throws Exception {
         List<User> actual = userDao.findAll();
-        ITable expected = getExpectedTable(FIND_ALL_USERS_XML, TABLE_USER);
+        ITable expected = getExpectedTable(FIND_ALL_USERS_XML, TABLE_USERS);
         assertEquals(actual.size(), expected.getRowCount());
         for (int i = 0; i < actual.size(); i++) {
             assertEquals(actual.get(i).getLogin(),
@@ -86,7 +86,7 @@ public class UserDaoImplTest extends DbConfig {
     @Test
     public void findByLogin() throws Exception {
         User actual = userDao.findByLogin("ad");
-        ITable expected = getExpectedTable(FIND_BY_LOGIN_USER_XML, TABLE_USER);
+        ITable expected = getExpectedTable(FIND_BY_LOGIN_USER_XML, TABLE_USERS);
         assertEquals("Row count must be 1", 1, expected.getRowCount());
         assertEquals(actual.getLogin(), expected.getValue(0, "LOGIN"));
     }
@@ -94,7 +94,7 @@ public class UserDaoImplTest extends DbConfig {
     @Test
     public void findByEmail() throws Exception {
         User actual = userDao.findByEmail("ad@gmail.com");
-        ITable expected = getExpectedTable(FIND_BY_EMAIL_USER_XML, TABLE_USER);
+        ITable expected = getExpectedTable(FIND_BY_EMAIL_USER_XML, TABLE_USERS);
         assertEquals("Row count must be 1", 1, expected.getRowCount());
         assertEquals(actual.getEmail(), expected.getValue(0, "EMAIL"));
     }
