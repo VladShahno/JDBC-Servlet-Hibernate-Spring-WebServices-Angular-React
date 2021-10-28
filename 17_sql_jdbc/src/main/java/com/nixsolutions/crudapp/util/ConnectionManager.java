@@ -1,6 +1,5 @@
 package com.nixsolutions.crudapp.util;
 
-
 import com.nixsolutions.crudapp.exception.DataProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +23,8 @@ public class ConnectionManager {
         }
     }
 
-    public void finish(PreparedStatement statement,
-            Connection connection, ResultSet resultSet) {
+    public void finish(PreparedStatement statement, Connection connection,
+            ResultSet resultSet) {
         closeStatement(statement);
         closeConnection(connection);
         closeResultSet(resultSet);
