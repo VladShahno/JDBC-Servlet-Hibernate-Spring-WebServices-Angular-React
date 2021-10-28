@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
+import org.h2.Driver;
+
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
@@ -18,7 +20,7 @@ public class DataSourceUtil {
         Properties properties = loadProperties();
         this.dataSource.setUrl(properties.getProperty("url"));
         this.dataSource.setUsername(properties.getProperty("user"));
-        this.dataSource.setDriverClassName("database.driver");
+        dataSource.setDriver(Driver.load());
     }
 
     public static void setPropertyFile(String propertyFile) {
