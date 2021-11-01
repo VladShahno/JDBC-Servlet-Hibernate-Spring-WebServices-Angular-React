@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
 
@@ -26,6 +27,9 @@ public class UserDaoImplTest extends DbConfig {
     private static final String TABLE_USERS = "USER";
     private static final String[] IGNORE_COLS = { "user_id" };
     private UserDao userDao;
+
+    public UserDaoImplTest() throws IOException {
+    }
 
     @BeforeClass
     public static void ddlOperations() throws Exception {
@@ -62,17 +66,6 @@ public class UserDaoImplTest extends DbConfig {
     }
 
     @Test
-    public void testRemoveUser() throws Exception {
-        User user = new User();
-        user.setId(2L);
-        userDao.remove(user);
-
-        ITable expected = getExpectedTable(REMOVE_USER_XML, TABLE_USERS);
-        ITable actual = getActualTable(TABLE_USERS);
-        assertEqualsIgnoreCols(expected, actual, IGNORE_COLS);
-    }
-
-    @Test
     public void findAll() throws Exception {
         List<User> actual = userDao.findAll();
         ITable expected = getExpectedTable(FIND_ALL_USERS_XML, TABLE_USERS);
@@ -97,5 +90,16 @@ public class UserDaoImplTest extends DbConfig {
         ITable expected = getExpectedTable(FIND_BY_EMAIL_USER_XML, TABLE_USERS);
         assertEquals("Row count must be 1", 1, expected.getRowCount());
         assertEquals(actual.getEmail(), expected.getValue(0, "EMAIL"));
+    }
+
+    @Test
+    public void testRemoveUser() throws Exception {
+        User user = new User();
+        user.setId(2L);
+        userDao.remove(user);
+
+        ITable expected = getExpectedTable(REMOVE_USER_XML, TABLE_USERS);
+        ITable actual = getActualTable(TABLE_USERS);
+        assertEqualsIgnoreCols(expected, actual, IGNORE_COLS);
     }
 }

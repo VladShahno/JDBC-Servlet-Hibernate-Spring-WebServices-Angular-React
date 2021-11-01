@@ -2,7 +2,7 @@ package com.nixsolutions.crudapp.dao;
 
 import java.sql.SQLException;
 
-public interface BasicDao<E> {
+public interface Dao<E> {
 
     void create(E entity) throws SQLException;
 

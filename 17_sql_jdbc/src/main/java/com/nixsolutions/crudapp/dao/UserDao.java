@@ -5,15 +5,12 @@ import com.nixsolutions.crudapp.entity.User;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface UserDao extends BasicDao<User> {
-
-    @Override
+public interface UserDao extends Dao<User> {
+    
     void create(User user) throws SQLException;
-
-    @Override
+    
     void update(User user) throws SQLException;
-
-    @Override
+    
     void remove(User user) throws SQLException;
 
     List<User> findAll();

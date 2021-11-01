@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static org.dbunit.Assertion.assertEqualsIgnoreCols;
 import static org.junit.Assert.assertEquals;
 
@@ -22,6 +24,9 @@ public class RoleDaoImplTest extends DbConfig {
     private static final String SAVE_ROLE_XML = "src/test/java/resources/dataset/role/save-role.xml";
     private static final String REMOVE_ROLE_XML = "src/test/java/resources/dataset/role/remove-role.xml";
     private RoleDao roleDao;
+
+    public RoleDaoImplTest() throws IOException {
+    }
 
     @BeforeClass
     public static void ddlOperations() throws Exception {
@@ -72,5 +77,4 @@ public class RoleDaoImplTest extends DbConfig {
 
         assertEquals(expectedTable.getValue(0, "role_name"), actual.getName());
     }
-
 }

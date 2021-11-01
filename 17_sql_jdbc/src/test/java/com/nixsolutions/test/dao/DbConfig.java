@@ -11,10 +11,8 @@ import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.operation.DatabaseOperation;
 import org.h2.tools.RunScript;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
+import javax.sql.DataSource;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,12 +20,9 @@ import java.sql.SQLException;
 public class DbConfig {
     private String starterTableXml = "src/test/java/resources/dataset/starterTable.xml";
     private String ddlSql = "src/test/java/resources/sql/DDL.sql";
-    private String dbPropertiesFile = "src/test/java/resources/app.test.properties";
-    public DataSourceUtil dataSource;
+    private DataSource dataSource = DataSourceUtil.getDataSource();
 
-    public DbConfig() {
-        DataSourceUtil.setPropertyFile(dbPropertiesFile);
-        this.dataSource = new DataSourceUtil();
+    public DbConfig() throws IOException {
     }
 
     public void setUp() throws Exception {
