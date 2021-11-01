@@ -78,6 +78,9 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
         Connection connection = null;
         try {
             connection = createConnection();
+            // Тут ты поставил autoCommit = false.
+            // Получается по дефолту стоит true
+            // А почему тогда ты обратно не поставил true?
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(UPDATE_USER);
             statement.setString(1, user.getLogin());
@@ -210,7 +213,7 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
 
     @Override
     public User findByEmail(String email) {
-
+        // Зачем здесь вручную управлять транзакцией? Нужно использовать только там где в этом есть логика!
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;

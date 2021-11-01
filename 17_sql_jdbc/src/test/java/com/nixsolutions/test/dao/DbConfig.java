@@ -20,11 +20,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DbConfig {
+
+    // зачем все эти пути тут?
     private String starterTableXml = "src/test/java/resources/dataset/starterTable.xml";
     private String ddlSql = "src/test/java/resources/sql/DDL.sql";
     private String dbPropertiesFile = "src/test/java/resources/app.test.properties";
     public DataSourceUtil dataSource;
 
+    // Что бы создать класс я должен вначале вызвать статический метод класса а потом конструктор. Ужасный API.
     public DbConfig() {
         DataSourceUtil.setPropertyFile(dbPropertiesFile);
         this.dataSource = new DataSourceUtil();
@@ -38,6 +41,9 @@ public class DbConfig {
         DatabaseOperation.CLEAN_INSERT.execute(connection, iDataSet);
     }
 
+    // Есть более логичное место что бы вызывать создание таблиц.
+    // Подсказка: сейчас таблицы создаются только для тестов. А для основного кода? Тебе это понадобится в следущей лабе буквально.
+    // В задании есть 2 способа как это сделать
     public void createTables() {
         try (Connection connection = dataSource.getConnection()) {
             InputStreamReader inputStreamReader = new InputStreamReader(
@@ -47,6 +53,9 @@ public class DbConfig {
             throw new RuntimeException(ex);
         }
     }
+
+    // В задании указано: JdbcUserDao и JdbcRoleDao должны быть протестированы при помощи DbUnit и Database-Rider.
+    // Где Rider? Почему его нет в проекте? Как он заменит этот код?
 
     protected ITable getExpectedTable(String presetXml, String table)
             throws DataSetException, MalformedURLException {
