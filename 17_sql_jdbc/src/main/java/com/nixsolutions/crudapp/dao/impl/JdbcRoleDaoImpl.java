@@ -108,7 +108,7 @@ public class JdbcRoleDaoImpl implements RoleDao {
     public Role findByName(String name) throws SQLException {
 
         ResultSet resultSet = null;
-        try (Connection connection = dataSource.getConnection();PreparedStatement preparedStatement = connection.prepareStatement(
+        try (Connection connection = dataSource.getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(
                 SELECT_ROLE_BY_NAME)) {
             preparedStatement.setString(1, name);
             resultSet = preparedStatement.executeQuery();

@@ -13,9 +13,11 @@ public class DataSourceUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
             DataSourceUtil.class);
+
     private static BasicDataSource basicDataSource;
 
     public static DataSource getDataSource() throws IOException {
+
         if (basicDataSource == null) {
             LOGGER.info("Creating of new dataSource!");
             BasicDataSource ds = new BasicDataSource();

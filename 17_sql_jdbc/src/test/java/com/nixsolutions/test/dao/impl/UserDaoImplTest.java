@@ -3,6 +3,7 @@ package com.nixsolutions.test.dao.impl;
 import com.nixsolutions.crudapp.dao.UserDao;
 import com.nixsolutions.crudapp.dao.impl.JdbcUserDaoImpl;
 import com.nixsolutions.crudapp.entity.User;
+import com.nixsolutions.crudapp.util.DataBaseCreator;
 import com.nixsolutions.test.dao.DbConfig;
 
 import org.dbunit.dataset.ITable;
@@ -33,7 +34,7 @@ public class UserDaoImplTest extends DbConfig {
 
     @BeforeClass
     public static void ddlOperations() throws Exception {
-        new DbConfig().createTables();
+        DataBaseCreator.createTableSql();
     }
 
     @Before

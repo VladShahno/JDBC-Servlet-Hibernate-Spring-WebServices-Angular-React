@@ -5,8 +5,12 @@ import com.nixsolutions.crudapp.exception.DataProcessingException;
 import com.nixsolutions.crudapp.entity.User;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 import com.nixsolutions.crudapp.util.DataSourceUtil;
@@ -38,7 +42,8 @@ public class JdbcUserDaoImpl implements UserDao {
 
     private static final String REMOVE_USER_SQL = "DELETE FROM USER WHERE user_id =?;";
 
-    public JdbcUserDaoImpl() throws IOException {}
+    public JdbcUserDaoImpl() throws IOException {
+    }
 
     @Override
     public void create(User user) throws SQLException {

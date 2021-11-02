@@ -1,6 +1,7 @@
 package com.nixsolutions.test.dao.impl;
 
 import com.nixsolutions.crudapp.entity.Role;
+import com.nixsolutions.crudapp.util.DataBaseCreator;
 import com.nixsolutions.test.dao.DbConfig;
 import com.nixsolutions.crudapp.dao.RoleDao;
 import com.nixsolutions.crudapp.dao.impl.JdbcRoleDaoImpl;
@@ -30,7 +31,7 @@ public class RoleDaoImplTest extends DbConfig {
 
     @BeforeClass
     public static void ddlOperations() throws Exception {
-        new DbConfig().createTables();
+        DataBaseCreator.createTableSql();
     }
 
     @Before
