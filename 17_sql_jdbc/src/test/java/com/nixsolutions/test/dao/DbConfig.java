@@ -18,7 +18,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DbConfig {
-    private String starterTableXml = "src/test/java/resources/dataset/starterTable.xml";
+    private String starterTableXml = "src/test/resources/dataset/starterTable.xml";
     private DataSource dataSource = DataSourceUtil.getDataSource();
 
     public DbConfig() throws IOException {
@@ -49,4 +49,3 @@ public class DbConfig {
         }
     }
 }
-

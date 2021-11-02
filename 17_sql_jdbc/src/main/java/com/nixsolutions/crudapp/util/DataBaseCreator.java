@@ -9,11 +9,11 @@ import java.sql.Statement;
 public class DataBaseCreator {
 
     private static final String ROLE_TABLE_SQL =
-            "CREATE TABLE ROLE (" + " ROLE_ID IDENTITY NOT NULL,\n"
+            "CREATE TABLE IF NOT EXISTS ROLE (" + " ROLE_ID IDENTITY NOT NULL,\n"
                     + "ROLE_NAME varchar(45) NOT NULL\n" + ");";
 
     private static final String USER_TABLE_SQL =
-            "CREATE TABLE USER (" + " user_id IDENTITY NOT NULL,\n"
+            "CREATE TABLE IF NOT EXISTS USER (" + " user_id IDENTITY NOT NULL,\n"
                     + "login varchar(20) NOT NULL,\n"
                     + "password varchar(20) NOT NULL,\n"
                     + "email varchar(30) NOT NULL,\n"

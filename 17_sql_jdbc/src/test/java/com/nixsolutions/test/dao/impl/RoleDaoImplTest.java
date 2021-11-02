@@ -20,10 +20,10 @@ public class RoleDaoImplTest extends DbConfig {
 
     private static final String[] IGNORE_COLS = { "role_id" };
     private static final String TABLE_ROLES = "ROLE";
-    private static final String FIND_ROLE_XML = "src/test/java/resources/dataset/role/find-role.xml";
-    private static final String UPDATE_ROLE_XML = "src/test/java/resources/dataset/role/update-role.xml";
-    private static final String SAVE_ROLE_XML = "src/test/java/resources/dataset/role/save-role.xml";
-    private static final String REMOVE_ROLE_XML = "src/test/java/resources/dataset/role/remove-role.xml";
+    private static final String FIND_ROLE_XML = "src/test/resources/dataset/role/find-role.xml";
+    private static final String UPDATE_ROLE_XML = "src/test/resources/dataset/role/update-role.xml";
+    private static final String SAVE_ROLE_XML = "src/test/resources/dataset/role/save-role.xml";
+    private static final String REMOVE_ROLE_XML = "src/test/resources/dataset/role/remove-role.xml";
     private RoleDao roleDao;
 
     public RoleDaoImplTest() throws IOException {
