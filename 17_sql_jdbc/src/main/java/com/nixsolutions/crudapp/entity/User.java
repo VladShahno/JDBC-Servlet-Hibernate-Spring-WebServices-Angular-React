@@ -20,6 +20,32 @@ public class User {
 
     private Long roleId;
 
+    public User(String login, String password, String email, String firstName,
+            String lastName, Date birthday, Long roleId) {
+        this.login = login;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthday = birthday;
+        this.roleId = roleId;
+    }
+
+    public User(Long id, String login, String password, String email,
+            String firstName, String lastName, Date birthday, Long roleId) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthday = birthday;
+        this.roleId = roleId;
+    }
+
+    public User() {
+    }
+
     public Long getId() {
         return id;
     }
@@ -82,32 +108,6 @@ public class User {
 
     public void setRoleId(Long roleId) {
         this.roleId = roleId;
-    }
-
-    public User(Long id, String login, String password, String email,
-            String firstName, String lastName, Date birthday, Long roleId) {
-        this.id = id;
-        this.login = login;
-        this.password = password;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthday = birthday;
-        this.roleId = roleId;
-    }
-
-    public User(String login, String password, String email, String firstName,
-            String lastName, Date birthday, Long roleId) {
-        this.login = login;
-        this.password = password;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthday = birthday;
-        this.roleId = roleId;
-    }
-
-    public User() {
     }
 
     @Override

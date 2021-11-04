@@ -4,7 +4,6 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -16,7 +15,7 @@ public class DataSourceUtil {
 
     private static BasicDataSource basicDataSource;
 
-    public static DataSource getDataSource() throws IOException {
+    public static BasicDataSource getDataSource() throws IOException {
 
         if (basicDataSource == null) {
             LOGGER.info("Creating of new dataSource!");
