@@ -32,6 +32,8 @@ public class DataSourceUtil {
             ds.setDriverClassName(properties.getProperty("driver"));
             ds.setUrl(properties.getProperty("url"));
             ds.setUsername(properties.getProperty("user"));
+            ds.setMaxTotal(
+                    Integer.parseInt(properties.getProperty("MaxPoolSize")));
             basicDataSource = ds;
         }
         return basicDataSource;
