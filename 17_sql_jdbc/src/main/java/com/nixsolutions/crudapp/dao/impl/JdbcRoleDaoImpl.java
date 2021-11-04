@@ -40,7 +40,7 @@ public class JdbcRoleDaoImpl extends AbstractJdbcDao implements RoleDao {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     INSERT_ROLE_SQL);
             preparedStatement.setString(1, role.getName());
-            executeCreationFromPreparedStatement(connection, preparedStatement);
+            executePreparedStatementUpdate(connection, preparedStatement);
         } catch (SQLException e) {
             logger.error("Cannot create role", e);
         }

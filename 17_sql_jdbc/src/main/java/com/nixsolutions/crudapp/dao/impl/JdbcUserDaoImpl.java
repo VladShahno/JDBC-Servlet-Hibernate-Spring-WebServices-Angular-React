@@ -52,7 +52,7 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
             preparedStatement.setDate(6,
                     new java.sql.Date(user.getBirthday().getTime()));
             preparedStatement.setLong(7, user.getRoleId());
-            executeCreationFromPreparedStatement(connection, preparedStatement);
+            executePreparedStatementUpdate(connection, preparedStatement);
         } catch (SQLException e) {
             logger.error("Cannot create user!", e);
         }
@@ -75,7 +75,7 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
                     new Date(user.getBirthday().getTime()));
             preparedStatement.setLong(7, user.getRoleId());
             preparedStatement.setLong(8, user.getId());
-            executeCreationFromPreparedStatement(connection, preparedStatement);
+            executePreparedStatementUpdate(connection, preparedStatement);
         } catch (SQLException e) {
             logger.error("Cannot update!", e);
         }
@@ -90,7 +90,7 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
             PreparedStatement preparedStatement = connection.prepareStatement(
                     REMOVE_USER_SQL);
             preparedStatement.setLong(1, user.getId());
-            executeCreationFromPreparedStatement(connection, preparedStatement);
+            executePreparedStatementUpdate(connection, preparedStatement);
         } catch (SQLException e) {
             logger.error("Cannot delete user", e);
         }

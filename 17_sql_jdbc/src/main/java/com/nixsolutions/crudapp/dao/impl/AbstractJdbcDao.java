@@ -29,7 +29,7 @@ public abstract class AbstractJdbcDao {
         }
     }
 
-    protected void executeCreationFromPreparedStatement(Connection connection,
+    protected void executePreparedStatementUpdate(Connection connection,
             PreparedStatement preparedStatement) throws SQLException {
         try {
             connection.setAutoCommit(false);
