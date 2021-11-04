@@ -1,106 +1,123 @@
 package com.nixsolutions.test.dao.impl;
 
-import com.nixsolutions.crudapp.dao.UserDao;
+import com.github.database.rider.core.DBUnitRule;
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.SeedStrategy;
+import com.nixsolutions.crudapp.dao.impl.AbstractJdbcDao;
 import com.nixsolutions.crudapp.dao.impl.JdbcUserDaoImpl;
 import com.nixsolutions.crudapp.entity.User;
-import com.nixsolutions.crudapp.util.DataBaseCreator;
-import com.nixsolutions.test.dao.DbConfig;
-
-import org.dbunit.dataset.ITable;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.List;
 
-import static org.dbunit.Assertion.assertEqualsIgnoreCols;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-public class UserDaoImplTest extends DbConfig {
-    private static final String SAVE_USER_XML = "src/test/resources/dataset/user/save-user.xml";
-    private static final String UPDATE_USER_XML = "src/test/resources/dataset/user/update-user.xml";
-    private static final String REMOVE_USER_XML = "src/test/resources/dataset/user/remove-user.xml";
-    private static final String FIND_BY_LOGIN_USER_XML = "src/test/resources/dataset/user/find-login-user.xml";
-    private static final String FIND_BY_EMAIL_USER_XML = "src/test/resources/dataset/user/find-email-user.xml";
-    private static final String FIND_ALL_USERS_XML = "src/test/resources/dataset/user/findall-user.xml";
-    private static final String TABLE_USERS = "USER";
-    private static final String[] IGNORE_COLS = { "user_id" };
-    private UserDao userDao;
+@RunWith(JUnit4.class)
+public class UserDaoImplTest extends AbstractJdbcDao {
+
+    JdbcUserDaoImpl jdbcUserDao = new JdbcUserDaoImpl();
+
+    @Rule
+    public DBUnitRule dbUnitRule = DBUnitRule.instance(getConnection());
 
     public UserDaoImplTest() throws IOException {
     }
 
-    @BeforeClass
-    public static void ddlOperations() throws Exception {
-        DataBaseCreator.createTableSql();
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        userDao = new JdbcUserDaoImpl();
+    @Test
+    @DataSet(value = "dataset/dataRole.xml", strategy = SeedStrategy.INSERT, cleanBefore = true, cleanAfter = true, executeScriptsBefore = {
+            "sql/DROP.sql", "sql/DDL.sql" })
+    public void shouldReturnTheUsernameOfTheUserAfterAddingItToTheDatabase()
+            throws SQLException, IOException {
+        User user = getNewUser();
+        jdbcUserDao.create(user);
+        List<User> list = jdbcUserDao.findAll();
+        assertEquals(1, list.size());
     }
 
     @Test
-    public void testCreateUser() throws Exception {
-        userDao.create(
-                new User("Log3", "Pass3", "e3@gmail.com", "Name3", "LastName3",
-                        Date.valueOf("1999-09-09"), 1L));
-        ITable expected = getExpectedTable(SAVE_USER_XML, TABLE_USERS);
-        ITable actual = getActualTable(TABLE_USERS);
-        assertEqualsIgnoreCols(expected, actual, IGNORE_COLS);
+    @DataSet(value = { "dataset/dataRole.xml",
+            "dataset/dataUser.xml" }, strategy = SeedStrategy.CLEAN_INSERT, cleanAfter = true, cleanBefore = true, tableOrdering = {
+            "role", "user" }, executeScriptsBefore = { "sql/DROP.sql",
+            "sql/DDL.sql" })
+    public void shouldReturnAllUsersFromDatabase() {
+        List<User> list = jdbcUserDao.findAll();
+        assertEquals(1, list.size());
     }
 
     @Test
-    public void testUpdateUser() throws Exception {
-        User user = new User("admin", "54321", "ad@gmail.com", "Serhii",
-                "Yevtushok", Date.valueOf("1993-07-28"), 1L);
-        user.setId(1L);
-        userDao.update(user);
-
-        ITable expected = getExpectedTable(UPDATE_USER_XML, TABLE_USERS);
-        ITable actual = getActualTable(TABLE_USERS);
-
-        assertEqualsIgnoreCols(expected, actual, IGNORE_COLS);
+    @DataSet(value = { "dataset/dataRole.xml",
+            "dataset/dataUser.xml" }, strategy = SeedStrategy.CLEAN_INSERT, cleanAfter = true, cleanBefore = true, tableOrdering = {
+            "role", "user" }, executeScriptsBefore = { "sql/DROP.sql",
+            "sql/DDL.sql" })
+    public void shouldBecomeZeroTheSizeOfTheTableAfterDeletingOneRecord()
+            throws IOException {
+        User user = getNewUser();
+        jdbcUserDao.remove(user);
+        List<User> list = jdbcUserDao.findAll();
+        assertEquals(0, list.size());
     }
 
     @Test
-    public void findAll() throws Exception {
-        List<User> actual = userDao.findAll();
-        ITable expected = getExpectedTable(FIND_ALL_USERS_XML, TABLE_USERS);
-        assertEquals(actual.size(), expected.getRowCount());
-        for (int i = 0; i < actual.size(); i++) {
-            assertEquals(actual.get(i).getLogin(),
-                    expected.getValue(i, "LOGIN"));
-        }
+    @DataSet(value = { "dataset/dataRole.xml",
+            "dataset/dataUser.xml" }, strategy = SeedStrategy.CLEAN_INSERT, cleanAfter = true, cleanBefore = true, tableOrdering = {
+            "role", "user" }, executeScriptsBefore = { "sql/DROP.sql",
+            "sql/DDL.sql" })
+    public void shouldReturnUserById() {
+        User user = jdbcUserDao.findById(1L);
+        assertNotNull(user);
     }
 
     @Test
-    public void findByLogin() throws Exception {
-        User actual = userDao.findByLogin("ad");
-        ITable expected = getExpectedTable(FIND_BY_LOGIN_USER_XML, TABLE_USERS);
-        assertEquals("Row count must be 1", 1, expected.getRowCount());
-        assertEquals(actual.getLogin(), expected.getValue(0, "LOGIN"));
+    @DataSet(value = { "dataset/dataRole.xml",
+            "dataset/dataUser.xml" }, strategy = SeedStrategy.CLEAN_INSERT, cleanAfter = true, cleanBefore = true, tableOrdering = {
+            "role", "user" }, executeScriptsBefore = { "sql/DROP.sql",
+            "sql/DDL.sql" })
+    public void shouldReturnUserByLogin() {
+        User user = jdbcUserDao.findByLogin("lumiere");
+        assertNotNull(user);
     }
 
     @Test
-    public void findByEmail() throws Exception {
-        User actual = userDao.findByEmail("ad@gmail.com");
-        ITable expected = getExpectedTable(FIND_BY_EMAIL_USER_XML, TABLE_USERS);
-        assertEquals("Row count must be 1", 1, expected.getRowCount());
-        assertEquals(actual.getEmail(), expected.getValue(0, "EMAIL"));
+    @DataSet(value = { "dataset/dataRole.xml",
+            "dataset/dataUser.xml" }, strategy = SeedStrategy.CLEAN_INSERT, cleanAfter = true, cleanBefore = true, tableOrdering = {
+            "role", "user" }, executeScriptsBefore = { "sql/DROP.sql",
+            "sql/DDL.sql" })
+    public void shouldReturnUserByEmail() {
+        User user = jdbcUserDao.findByEmail("vlad@gmail.com");
+        assertNotNull(user);
     }
 
     @Test
-    public void testRemoveUser() throws Exception {
+    @DataSet(value = { "dataset/dataRole.xml",
+            "dataset/dataUser.xml" }, strategy = SeedStrategy.CLEAN_INSERT, cleanAfter = true, cleanBefore = true, tableOrdering = {
+            "role", "user" }, executeScriptsBefore = { "sql/DROP.sql",
+            "sql/DDL.sql" })
+    public void shouldBeUpdatedLoginAfterUpdatingTheFieldOfTableUser()
+            throws IOException {
+        User user = jdbcUserDao.findById(1L);
+        assertEquals("lumiere", user.getLogin());
+        jdbcUserDao.update(getNewUser());
+        User user1 = jdbcUserDao.findById(1L);
+        assertEquals("vlad", user1.getLogin());
+    }
+
+    public User getNewUser() {
         User user = new User();
-        user.setId(2L);
-        userDao.remove(user);
-
-        ITable expected = getExpectedTable(REMOVE_USER_XML, TABLE_USERS);
-        ITable actual = getActualTable(TABLE_USERS);
-        assertEqualsIgnoreCols(expected, actual, IGNORE_COLS);
+        user.setId(1L);
+        user.setLogin("vlad");
+        user.setPassword("123");
+        user.setEmail("vlad@gmail.com");
+        user.setFirstName("vlad");
+        user.setLastName("shakhno");
+        user.setBirthday(Date.valueOf("2019-03-20"));
+        user.setRoleId(1L);
+        return user;
     }
 }

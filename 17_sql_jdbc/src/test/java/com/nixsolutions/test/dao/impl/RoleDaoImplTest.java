@@ -1,81 +1,93 @@
 package com.nixsolutions.test.dao.impl;
 
-import com.nixsolutions.crudapp.entity.Role;
-import com.nixsolutions.crudapp.util.DataBaseCreator;
-import com.nixsolutions.test.dao.DbConfig;
-import com.nixsolutions.crudapp.dao.RoleDao;
+import com.github.database.rider.core.DBUnitRule;
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.core.api.dataset.SeedStrategy;
+import com.nixsolutions.crudapp.dao.impl.AbstractJdbcDao;
 import com.nixsolutions.crudapp.dao.impl.JdbcRoleDaoImpl;
-
-import org.dbunit.dataset.ITable;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import com.nixsolutions.crudapp.entity.Role;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
-import static org.dbunit.Assertion.assertEqualsIgnoreCols;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-public class RoleDaoImplTest extends DbConfig {
+@RunWith(JUnit4.class)
+public class RoleDaoImplTest extends AbstractJdbcDao {
 
-    private static final String[] IGNORE_COLS = { "role_id" };
-    private static final String TABLE_ROLES = "ROLE";
-    private static final String FIND_ROLE_XML = "src/test/resources/dataset/role/find-role.xml";
-    private static final String UPDATE_ROLE_XML = "src/test/resources/dataset/role/update-role.xml";
-    private static final String SAVE_ROLE_XML = "src/test/resources/dataset/role/save-role.xml";
-    private static final String REMOVE_ROLE_XML = "src/test/resources/dataset/role/remove-role.xml";
-    private RoleDao roleDao;
+    JdbcRoleDaoImpl jdbcRoleDao = new JdbcRoleDaoImpl();
+
+    @Rule
+    public DBUnitRule dbUnitRule = DBUnitRule.instance(getConnection());
 
     public RoleDaoImplTest() throws IOException {
     }
 
-    @BeforeClass
-    public static void ddlOperations() throws Exception {
-        DataBaseCreator.createTableSql();
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        this.roleDao = new JdbcRoleDaoImpl();
+    @Test
+    @DataSet(strategy = SeedStrategy.INSERT, cleanBefore = true, cleanAfter = true, executeScriptsBefore = {
+            "sql/DROP.sql", "sql/DDL.sql" })
+    public void shouldReturnTheNameOfTheRoleAfterAddingItToTheDatabase()
+            throws IOException {
+        jdbcRoleDao.create(getNewRole());
+        List<Role> list = jdbcRoleDao.findAll();
+        assertEquals(1, list.size());
     }
 
     @Test
-    public void testRemoveRole() throws Exception {
-        roleDao.remove(new Role("ADMIN"));
-
-        ITable actualTable = getActualTable(TABLE_ROLES);
-        ITable expectedTable = getExpectedTable(REMOVE_ROLE_XML, TABLE_ROLES);
-
-        assertEqualsIgnoreCols(expectedTable, actualTable, IGNORE_COLS);
+    @DataSet(value = "dataset/dataRole.xml", strategy = SeedStrategy.CLEAN_INSERT, cleanAfter = true, executeScriptsBefore = {
+            "sql/DROP.sql", "sql/DDL.sql" })
+    public void shouldReturnAllRolesFromDatabase() {
+        List<Role> list = jdbcRoleDao.findAll();
+        assertEquals(2, list.size());
     }
 
     @Test
-    public void testCreateRole() throws Exception {
-        roleDao.create(new Role("MEM"));
-
-        ITable actualTable = getActualTable(TABLE_ROLES);
-        ITable expectedTable = getExpectedTable(SAVE_ROLE_XML, TABLE_ROLES);
-
-        assertEqualsIgnoreCols(expectedTable, actualTable, IGNORE_COLS);
+    @DataSet(value = "dataset/dataRole.xml", strategy = SeedStrategy.CLEAN_INSERT, cleanAfter = true, executeScriptsBefore = {
+            "sql/DROP.sql", "sql/DDL.sql" })
+    public void shouldBecomeOneTheSizeOfTheTableAfterDeletingOneRecord()
+            throws IOException {
+        Role role = getNewRole();
+        jdbcRoleDao.remove(role);
+        List<Role> list = jdbcRoleDao.findAll();
+        assertEquals(1, list.size());
     }
 
     @Test
-    public void testUpdateRole() throws Exception {
-        roleDao.update(new Role(1L, "MODERATOR"));
-
-        ITable actualTable = getActualTable(TABLE_ROLES);
-        ITable expectedTable = getExpectedTable(UPDATE_ROLE_XML, TABLE_ROLES);
-
-        assertEqualsIgnoreCols(expectedTable, actualTable, IGNORE_COLS);
+    @DataSet(value = "dataset/dataRole.xml", strategy = SeedStrategy.CLEAN_INSERT, cleanAfter = true, executeScriptsBefore = {
+            "sql/DROP.sql", "sql/DDL.sql" })
+    public void shouldReturnRoleById() {
+        Role role = jdbcRoleDao.findById(1L);
+        assertNotNull(role);
     }
 
     @Test
-    public void testFindByName() throws Exception {
-        Role actual = roleDao.findByName("ADMIN");
+    @DataSet(value = "dataset/dataRole.xml", strategy = SeedStrategy.CLEAN_INSERT, cleanAfter = true, executeScriptsBefore = {
+            "sql/DROP.sql", "sql/DDL.sql" })
+    public void shouldReturnRoleByName() throws SQLException {
+        Role role = jdbcRoleDao.findByName("bodyPositive");
+        assertNotNull(role);
+    }
 
-        ITable expectedTable = getExpectedTable(FIND_ROLE_XML, TABLE_ROLES);
+    @Test
+    @DataSet(value = "dataset/dataRole.xml", strategy = SeedStrategy.CLEAN_INSERT, cleanAfter = true, executeScriptsBefore = {
+            "sql/DROP.sql", "sql/DDL.sql" })
+    public void shouldBeUpdatedRoleAfterUpdatingTheFieldOfTableRole()
+            throws SQLException, IOException {
+        Role role = jdbcRoleDao.findById(1L);
+        assertEquals("king", role.getName());
+        role.setName("not king");
+        jdbcRoleDao.update(role);
+        role = jdbcRoleDao.findByName("not king");
+        assertEquals("not king", role.getName());
+    }
 
-        assertEquals(expectedTable.getValue(0, "role_name"), actual.getName());
+    private Role getNewRole() {
+        return new Role(1L, "king");
     }
 }
