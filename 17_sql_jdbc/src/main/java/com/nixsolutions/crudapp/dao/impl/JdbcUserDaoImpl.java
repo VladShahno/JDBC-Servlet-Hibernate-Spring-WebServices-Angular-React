@@ -3,8 +3,9 @@ package com.nixsolutions.crudapp.dao.impl;
 import com.nixsolutions.crudapp.dao.UserDao;
 import com.nixsolutions.crudapp.exception.DataProcessingException;
 import com.nixsolutions.crudapp.entity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,9 +14,9 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
 
-import org.slf4j.LoggerFactory;
-
 public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
+
+    private Logger LOGGER = LoggerFactory.getLogger(JdbcUserDaoImpl.class);
 
     private static final String INSERT_USERS_SQL = "INSERT INTO USER"
             + "  (login, password, email, first_name, last_name, birthday, role_id) VALUES "
@@ -33,12 +34,8 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
 
     private static final String REMOVE_USER_SQL = "DELETE FROM USER WHERE user_id =?;";
 
-    public JdbcUserDaoImpl() throws IOException {
-        logger = LoggerFactory.getLogger(JdbcUserDaoImpl.class);
-    }
-
     @Override
-    public void create(User user) throws IOException {
+    public void create(User user) {
 
         Connection connection = getConnection();
         try {
@@ -54,13 +51,13 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
             preparedStatement.setLong(7, user.getRoleId());
             executePreparedStatementUpdate(connection, preparedStatement);
         } catch (SQLException e) {
-            logger.error("Cannot create user!", e);
+            LOGGER.error("Cannot create user!", e);
         }
-        logger.info(user + " was created!");
+        LOGGER.info(user + " was created!");
     }
 
     @Override
-    public void update(User user) throws IOException {
+    public void update(User user) {
 
         Connection connection = getConnection();
         try {
@@ -77,13 +74,13 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
             preparedStatement.setLong(8, user.getId());
             executePreparedStatementUpdate(connection, preparedStatement);
         } catch (SQLException e) {
-            logger.error("Cannot update!", e);
+            LOGGER.error("Cannot update!", e);
         }
-        logger.info("user was updated");
+        LOGGER.info("user was updated");
     }
 
     @Override
-    public void remove(User user) throws IOException {
+    public void remove(User user) {
 
         Connection connection = getConnection();
         try {
@@ -92,9 +89,9 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
             preparedStatement.setLong(1, user.getId());
             executePreparedStatementUpdate(connection, preparedStatement);
         } catch (SQLException e) {
-            logger.error("Cannot delete user", e);
+            LOGGER.error("Cannot delete user", e);
         }
-        logger.info("user was deleted");
+        LOGGER.info("user was deleted");
     }
 
     @Override
@@ -110,13 +107,12 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
                 user = getUser(resultSet);
                 users.add(user);
             }
-            logger.info("All users found");
+            LOGGER.info("All users found");
             return users;
-        } catch (SQLException | IOException e) {
-            logger.error("Cannot find users", e);
+        } catch (SQLException e) {
+            LOGGER.error("Cannot find users", e);
             throw new DataProcessingException(e);
         }
-
     }
 
     @Override
@@ -131,10 +127,10 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
             while (resultSet.next()) {
                 user = getUser(resultSet);
             }
-            logger.info("User with id " + id + " found");
+            LOGGER.info("User with id " + id + " found");
             return user;
-        } catch (SQLException | IOException e) {
-            logger.error("Cannot find user with id " + id, e);
+        } catch (SQLException e) {
+            LOGGER.error("Cannot find user with id " + id, e);
             throw new DataProcessingException(e);
         }
     }
@@ -152,10 +148,10 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
                 user = getUser(resultSet);
             }
             connection.commit();
-            logger.info("User with login " + login + " found");
+            LOGGER.info("User with login " + login + " found");
             return user;
-        } catch (SQLException | IOException e) {
-            logger.error("Cannot find user with login " + login, e);
+        } catch (SQLException e) {
+            LOGGER.error("Cannot find user with login " + login, e);
             throw new DataProcessingException(e);
         }
     }
@@ -172,11 +168,11 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
             while (resultSet.next()) {
                 user = getUser(resultSet);
             }
-            logger.info("User with email " + email + " found");
+            LOGGER.info("User with email " + email + " found");
             connection.commit();
             return user;
-        } catch (SQLException | IOException e) {
-            logger.error("Cannot find user with email " + email, e);
+        } catch (SQLException e) {
+            LOGGER.error("Cannot find user with email " + email, e);
             throw new DataProcessingException(e);
         }
     }

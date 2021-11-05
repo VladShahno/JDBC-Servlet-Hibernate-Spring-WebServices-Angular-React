@@ -6,14 +6,13 @@ import java.util.List;
 
 public interface Dao<E> {
 
-    void create(E entity) throws SQLException, IOException;
+    void create(E entity);
 
-    void update(E entity) throws SQLException, IOException;
+    void update(E entity);
 
-    void remove(E entity) throws SQLException, IOException;
+    void remove(E entity);
 
-    E findById(Long id) throws SQLException;
+    E findById(Long id);
 
-    List<E> findAll() throws SQLException;
-
+    List<E> findAll();
 }
