@@ -1,0 +1,16 @@
+version: "3"
+services:
+  db:
+    container_name: shakhno-db
+    image: buildo/h2database
+    hostname: shakhno-h2
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./DDL_25_Docker.sql:/docker-entrypoint-initdb.d/DDL_25_Docker.sql
+    restart: always
+
+  app:
+    build: .
+    depends_on:
+      - db
