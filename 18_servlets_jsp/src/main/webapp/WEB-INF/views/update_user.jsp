@@ -9,13 +9,16 @@
     <jsp:include page="nav_bar.jsp"/>
     <h2 style="text-align: center">Edit user</h2>
     <div style="width: 70%; margin: 0 auto;">
-        <form action="${pageContext.request.contextPath}/users/update" method="post"
+        <form class="ajax-form" id="pwreset" action="${pageContext.request.contextPath}/users/update" method="post"
         style="display: flex; flex-direction: column; width: 50%; margin: 0 auto">
             <label for="user_login">Enter your login:</label>
             <input type="text" name="login" id="user_login" class="form-control"
                    required value="${user.login}" readonly>
             <label for="user_password">Enter your password:</label>
             <input type="password" name="password" id="user_password" class="form-control">
+            <label for="password">Confirm your password:</label>
+            <input type="password" name="password" id="new_user_password" class="form-control " onChange="verifyPassword();" >
+            <div id="divCheckPassword"></div>
             <div><span>${emailError}</span></div>
             <label for="user_email">Enter your email:</label>
             <input type="email" name="email" id="user_email" class="form-control"
@@ -40,13 +43,30 @@
             </select>
             <div style="display: inline-block">
                 <button type="submit" class="btn btn-success" style="width: 49.6%;
-                    margin-top: 5px" onclick="click()">Edit user</button>
+                    margin-top: 5px">Edit user</button>
                 <a href="${pageContext.request.contextPath}/home"
                     class="btn btn-outline-danger" style="width: 49.6%;
                     margin-top: 5px">Cancel</a>
             </div>
         </form>
     </div>
+    <script type="text/javascript">
+        function verifyPassword() {
+            let pass1 = document.getElementById("user_password").value;
+            let pass2 = document.getElementById("new_user_password").value;
+            let match = true;
+            if (pass1 != pass2) {
+                $("#divCheckPassword").html("Passwords do not match!")
+                document.getElementById("user_password").style.borderColor = "#ff0000";
+                document.getElementById("new_user_password").style.borderColor = "#ff0000";
+                match = false;
+            }
+            return match;
+        }
+        document.getElementById('pwreset').onsubmit = verifyPassword;
+        $(document).ready(function () { $("#new_user_password").keyup(isPasswordMatch);
+        });
+    </script>
     <jsp:include page="../body_links.jsp"/>
 </body>
 </html>

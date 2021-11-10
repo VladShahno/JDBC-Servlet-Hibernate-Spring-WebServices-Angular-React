@@ -13,13 +13,16 @@
         <div style="text-align: center; width: 40%; margin: 0 auto;" id="message">
             <span id="success-message">${message}</span>
         </div>
-        <form action="${pageContext.request.contextPath}/new" method="post" id="reg-form" style="display: flex;
+        <form class="ajax-form" id="pwreset" action="${pageContext.request.contextPath}/new" method="post" id="reg-form" style="display: flex;
         flex-direction: column; width: 50%; margin: 0 auto">
             <div id="loginError"><span>${loginError}</span></div>
             <label for="user_login">Enter your login:</label>
             <input type="text" name="login" id="user_login" class="form-control" required>
             <label for="user_password">Enter your password:</label>
-            <input type="password" name="password" id="user_password" class="form-control" required>
+            <input type="password" name="password" id="user_password" class="form-control">
+            <label for="password">Confirm your password:</label>
+            <input type="password" name="password" id="new_user_password" class="form-control " onChange="verifyPassword();" >
+            <div id="divCheckPassword"></div>
             <div style="margin-top: 5px" id="emailError"><span>${emailError}</span></div>
             <label for="user_email">Enter your email:</label>
             <input type="email" name="email" id="user_email" class="form-control" required>
@@ -40,12 +43,29 @@
             </select>
             <div style="display: inline-block">
                 <button type="submit" class="btn btn-success" style="width: 49.6%;
-                    margin-top: 5px" onclick="click()">Add user</button>
+                    margin-top: 5px">Add user</button>
                 <a href="${pageContext.request.contextPath}/home" class="btn btn-outline-danger" style="width: 49.6%;
                     margin-top: 5px">Cancel</a>
             </div>
         </form>
     </div>
+    <script type="text/javascript">
+        function verifyPassword() {
+            let pass1 = document.getElementById("user_password").value;
+            let pass2 = document.getElementById("new_user_password").value;
+            let match = true;
+            if (pass1 != pass2) {
+                $("#divCheckPassword").html("Passwords do not match!")
+                document.getElementById("user_password").style.borderColor = "#ff0000";
+                document.getElementById("new_user_password").style.borderColor = "#ff0000";
+                match = false;
+            }
+            return match;
+        }
+        document.getElementById('pwreset').onsubmit = verifyPassword;
+        $(document).ready(function () { $("#new_user_password").keyup(isPasswordMatch);
+        });
+        </script>
     <jsp:include page="../body_links.jsp"/>
 </body>
 </html>
