@@ -5,6 +5,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.SeedStrategy;
 import com.nixsolutions.crudapp.dao.UserDao;
 import com.nixsolutions.crudapp.dao.impl.JdbcUserDaoImpl;
+import com.nixsolutions.crudapp.entity.Role;
 import com.nixsolutions.crudapp.entity.User;
 import com.nixsolutions.crudapp.util.DataSourceUtil;
 import org.junit.Rule;
@@ -104,6 +105,7 @@ public class UserDaoImplTest {
 
     public User getNewUser() {
         User user = new User();
+        Role role = new Role(1L,"king");
         user.setId(1L);
         user.setLogin("vlad");
         user.setPassword("123");
@@ -111,7 +113,7 @@ public class UserDaoImplTest {
         user.setFirstName("vlad");
         user.setLastName("shakhno");
         user.setBirthday(Date.valueOf("2019-03-20"));
-        user.setRoleId(1L);
+        user.setRole(role);
         return user;
     }
 }

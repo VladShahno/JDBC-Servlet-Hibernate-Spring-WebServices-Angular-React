@@ -19,25 +19,23 @@ public class DataSourceUtil {
 
     static {
         try {
-            if (basicDataSource == null) {
-                LOGGER.info("Creating of new dataSource!");
-                BasicDataSource ds = new BasicDataSource();
+            LOGGER.info("Creating of new dataSource!");
+            BasicDataSource ds = new BasicDataSource();
 
-                Properties properties = new Properties();
-                InputStream inputStream = DataSourceUtil.class.getClassLoader()
-                        .getResourceAsStream("app.properties");
-                if (inputStream == null) {
-                    LOGGER.error("File not found!");
-                    throw new IOException("File not found");
-                }
-                properties.load(inputStream);
-                ds.setDriverClassName(properties.getProperty("driver"));
-                ds.setUrl(properties.getProperty("url"));
-                ds.setUsername(properties.getProperty("user"));
-                ds.setMaxTotal(Integer.parseInt(
-                        properties.getProperty("MaxPoolSize")));
-                basicDataSource = ds;
+            Properties properties = new Properties();
+            InputStream inputStream = DataSourceUtil.class.getClassLoader()
+                    .getResourceAsStream("app.properties");
+            if (inputStream == null) {
+                LOGGER.error("File not found!");
+                throw new IOException("File not found");
             }
+            properties.load(inputStream);
+            ds.setDriverClassName(properties.getProperty("driver"));
+            ds.setUrl(properties.getProperty("url"));
+            ds.setUsername(properties.getProperty("user"));
+            ds.setMaxTotal(
+                    Integer.parseInt(properties.getProperty("MaxPoolSize")));
+            basicDataSource = ds;
         } catch (IOException e) {
             LOGGER.error(
                     "Exception when getting data from file or create connection");
@@ -53,5 +51,3 @@ public class DataSourceUtil {
         }
     }
 }
-
-

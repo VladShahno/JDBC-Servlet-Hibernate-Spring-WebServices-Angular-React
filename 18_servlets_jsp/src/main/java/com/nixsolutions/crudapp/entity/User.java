@@ -1,6 +1,6 @@
 package com.nixsolutions.crudapp.entity;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class User {
 
@@ -18,21 +18,20 @@ public class User {
 
     private Date birthday;
 
-    private Long roleId;
+    private Role role;
 
     public User(String login, String password, String email, String firstName,
-            String lastName, Date birthday, Long roleId) {
+            String lastName, Date birthday) {
         this.login = login;
         this.password = password;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthday = birthday;
-        this.roleId = roleId;
     }
 
-    public User(Long id, String login, String password, String email,
-            String firstName, String lastName, Date birthday, Long roleId) {
+    public User(String login, String password, String email, String firstName,
+            String lastName, Date birthday, Role role) {
         this.id = id;
         this.login = login;
         this.password = password;
@@ -40,7 +39,7 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthday = birthday;
-        this.roleId = roleId;
+        this.role = role;
     }
 
     public User() {
@@ -102,12 +101,12 @@ public class User {
         this.birthday = birthday;
     }
 
-    public Long getRoleId() {
-        return roleId;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override
@@ -115,6 +114,7 @@ public class User {
         return "User{" + "id=" + id + ", login='" + login + '\''
                 + ", password='" + password + '\'' + ", email='" + email + '\''
                 + ", firstName='" + firstName + '\'' + ", lastName='" + lastName
-                + '\'' + ", birthday=" + birthday + ", roleId=" + roleId + '}';
+                + '\'' + ", birthday=" + birthday + ", roleId="
+                + role.toString() + '}';
     }
 }
