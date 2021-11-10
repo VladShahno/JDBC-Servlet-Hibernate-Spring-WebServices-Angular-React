@@ -1,8 +1,10 @@
 package com.nixsolutions.crudapp.dao.impl;
 
+import com.nixsolutions.crudapp.dao.RoleDao;
 import com.nixsolutions.crudapp.dao.UserDao;
 import com.nixsolutions.crudapp.exception.DataProcessingException;
 import com.nixsolutions.crudapp.entity.User;
+import com.nixsolutions.crudapp.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +19,8 @@ import java.util.List;
 public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
 
     private Logger LOGGER = LoggerFactory.getLogger(JdbcRoleDaoImpl.class);
+
+    private RoleDao roleDao = new JdbcRoleDaoImpl();
 
     private static final String INSERT_USERS_SQL = "INSERT INTO USER"
             + "  (login, password, email, first_name, last_name, birthday, role_id) VALUES "
@@ -48,10 +52,10 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
             preparedStatement.setString(5, user.getLastName());
             preparedStatement.setDate(6,
                     new java.sql.Date(user.getBirthday().getTime()));
-            preparedStatement.setLong(7, user.getRoleId());
+            preparedStatement.setLong(7, user.getRole().getId());
             executePreparedStatementUpdate(connection, preparedStatement);
         } catch (SQLException e) {
-            LOGGER.error("Cannot create user!", e);
+            throw new ValidationException(e.getMessage());
         }
         LOGGER.info(user + " was created!");
     }
@@ -70,11 +74,11 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
             preparedStatement.setString(5, user.getLastName());
             preparedStatement.setDate(6,
                     new Date(user.getBirthday().getTime()));
-            preparedStatement.setLong(7, user.getRoleId());
+            preparedStatement.setLong(7, user.getRole().getId());
             preparedStatement.setLong(8, user.getId());
             executePreparedStatementUpdate(connection, preparedStatement);
         } catch (SQLException e) {
-            LOGGER.error("Cannot update!", e);
+            throw new ValidationException(e);
         }
         LOGGER.info("user was updated");
     }
@@ -187,7 +191,31 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
         user.setFirstName(resultSet.getString("FIRST_NAME"));
         user.setLastName(resultSet.getString("LAST_NAME"));
         user.setBirthday(resultSet.getDate("BIRTHDAY"));
-        user.setRoleId(resultSet.getLong("ROLE_ID"));
+        user.setRole(roleDao.findById(resultSet.getLong("ROLE_ID")));
         return user;
+    }
+
+    public boolean existsByEmail(String email) {
+
+        boolean exist = false;
+        ResultSet resultSet = null;
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(
+                SELECT_USER_BY_EMAIL)) {
+            String emails = null;
+            preparedStatement.setString(1, email);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                emails = resultSet.getString("email");
+                if (emails.equalsIgnoreCase(email)) {
+                    exist = true;
+                } else {
+                    exist = false;
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("Connection Error! ", ex);
+        }
+        return exist;
     }
 }

@@ -3,6 +3,7 @@ package com.nixsolutions.crudapp.dao.impl;
 import com.nixsolutions.crudapp.dao.RoleDao;
 import com.nixsolutions.crudapp.entity.Role;
 import com.nixsolutions.crudapp.exception.DataProcessingException;
+import com.nixsolutions.crudapp.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ public class JdbcRoleDaoImpl extends AbstractJdbcDao implements RoleDao {
             preparedStatement.setString(1, role.getName());
             executePreparedStatementUpdate(connection, preparedStatement);
         } catch (SQLException e) {
-            LOGGER.error("Cannot create role", e);
+            throw new ValidationException(e.getMessage());
         }
         LOGGER.info("Role was created " + role);
     }
@@ -56,7 +57,7 @@ public class JdbcRoleDaoImpl extends AbstractJdbcDao implements RoleDao {
             preparedStatement.setLong(2, role.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.error("Cannot update role " + role, e);
+            throw new ValidationException(e);
         }
         LOGGER.info("Role was updated " + role);
     }
@@ -138,5 +139,53 @@ public class JdbcRoleDaoImpl extends AbstractJdbcDao implements RoleDao {
             LOGGER.error("Cannot find role with id " + id, e);
             throw new DataProcessingException(e);
         }
+    }
+
+    public boolean existsById(Long id) {
+
+        boolean exist = false;
+        ResultSet resultSet = null;
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(
+                SELECT_ROLE_BY_ID)) {
+            Long idFromDb = null;
+            preparedStatement.setLong(1, id);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                idFromDb = resultSet.getLong("role_id");
+                if (idFromDb == id) {
+                    exist = true;
+                } else {
+                    exist = false;
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("Connection Error! ", ex);
+        }
+        return exist;
+    }
+
+    public boolean existsByName(String name) {
+
+        boolean exist = false;
+        ResultSet resultSet = null;
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(
+                SELECT_ROLE_BY_NAME)) {
+            String fromDb = null;
+            preparedStatement.setString(1, name);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                fromDb = resultSet.getString("role_name");
+                if (fromDb.equalsIgnoreCase(name)) {
+                    exist = true;
+                } else {
+                    exist = false;
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("Connection Error! ", ex);
+        }
+        return exist;
     }
 }
