@@ -1,6 +1,6 @@
 package com.nixsolutions.crudapp.entity;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class User {
 
@@ -114,7 +114,6 @@ public class User {
         return "User{" + "id=" + id + ", login='" + login + '\''
                 + ", password='" + password + '\'' + ", email='" + email + '\''
                 + ", firstName='" + firstName + '\'' + ", lastName='" + lastName
-                + '\'' + ", birthday=" + birthday + ", roleId="
-                + role.toString() + '}';
+                + '\'' + ", birthday=" + birthday + ", role=" + role.toString() + '}';
     }
 }

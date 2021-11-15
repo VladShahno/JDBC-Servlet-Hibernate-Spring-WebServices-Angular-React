@@ -3,7 +3,6 @@ package com.nixsolutions.crudapp.service.impl;
 import com.nixsolutions.crudapp.dao.UserDao;
 import com.nixsolutions.crudapp.dao.impl.JdbcUserDaoImpl;
 import com.nixsolutions.crudapp.entity.User;
-import com.nixsolutions.crudapp.exception.ValidationException;
 import com.nixsolutions.crudapp.service.UserService;
 
 import java.util.List;
@@ -18,10 +17,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void create(User user) {
-        if (userDao.existsByEmail(user.getEmail())) {
-            throw new ValidationException("User with email - " + user.getEmail()
-                    + " already exists!");
-        }
         userDao.create(user);
     }
 
@@ -32,10 +27,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void remove(User user) {
-        if (!userDao.existsByEmail(user.getEmail())) {
-            throw new ValidationException("User with email - " + user.getEmail()
-                    + " does not exist!");
-        }
         userDao.remove(user);
     }
 

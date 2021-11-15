@@ -60,8 +60,12 @@
                 document.getElementById("user_password").style.borderColor = "#ff0000";
                 document.getElementById("new_user_password").style.borderColor = "#ff0000";
                 match = false;
+            }else {
+                $("#divCheckPassword").html("Passwords match!")
+                document.getElementById("user_password").style.borderColor = "green";
+                document.getElementById("new_user_password").style.borderColor = "green";
             }
-            return match;
+                return match;
         }
         document.getElementById('pwreset').onsubmit = verifyPassword;
         $(document).ready(function () { $("#new_user_password").keyup(isPasswordMatch);

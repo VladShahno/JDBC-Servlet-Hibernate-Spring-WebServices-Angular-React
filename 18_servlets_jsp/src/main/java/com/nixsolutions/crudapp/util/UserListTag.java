@@ -5,8 +5,9 @@ import com.nixsolutions.crudapp.entity.User;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class UserListTag extends SimpleTagSupport {
@@ -21,24 +22,9 @@ public class UserListTag extends SimpleTagSupport {
         this.users = users;
     }
 
-    public int getAge(Date birthday) {
-        int age = 0;
-        Calendar born = Calendar.getInstance();
-        Calendar now = Calendar.getInstance();
-        if (birthday != null) {
-            now.setTime(new Date());
-            born.setTime(birthday);
-            if (born.after(now)) {
-                throw new IllegalArgumentException(
-                        "Such a date is impossible!");
-            }
-            age = now.get(Calendar.YEAR) - born.get(Calendar.YEAR);
-            if (now.get(Calendar.DAY_OF_YEAR) < born.get(
-                    Calendar.DAY_OF_YEAR)) {
-                age -= 1;
-            }
-        }
-        return age;
+    public long getAge(Date birthday) {
+        return ChronoUnit.YEARS.between(birthday.toLocalDate(),
+                LocalDate.now());
     }
 
     @Override

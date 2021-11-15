@@ -4,7 +4,6 @@ import com.nixsolutions.crudapp.dao.RoleDao;
 import com.nixsolutions.crudapp.dao.UserDao;
 import com.nixsolutions.crudapp.exception.DataProcessingException;
 import com.nixsolutions.crudapp.entity.User;
-import com.nixsolutions.crudapp.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +17,7 @@ import java.util.List;
 
 public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
 
-    private Logger LOGGER = LoggerFactory.getLogger(JdbcRoleDaoImpl.class);
+    private Logger LOGGER = LoggerFactory.getLogger(JdbcUserDaoImpl.class);
 
     private RoleDao roleDao = new JdbcRoleDaoImpl();
 
@@ -55,7 +54,7 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
             preparedStatement.setLong(7, user.getRole().getId());
             executePreparedStatementUpdate(connection, preparedStatement);
         } catch (SQLException e) {
-            throw new ValidationException(e.getMessage());
+            LOGGER.error("Cannot create user!", e);
         }
         LOGGER.info(user + " was created!");
     }
@@ -78,7 +77,7 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
             preparedStatement.setLong(8, user.getId());
             executePreparedStatementUpdate(connection, preparedStatement);
         } catch (SQLException e) {
-            throw new ValidationException(e);
+            LOGGER.error("Cannot update!", e);
         }
         LOGGER.info("user was updated");
     }
@@ -193,29 +192,5 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
         user.setBirthday(resultSet.getDate("BIRTHDAY"));
         user.setRole(roleDao.findById(resultSet.getLong("ROLE_ID")));
         return user;
-    }
-
-    public boolean existsByEmail(String email) {
-
-        boolean exist = false;
-        ResultSet resultSet = null;
-        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(
-                SELECT_USER_BY_EMAIL)) {
-            String emails = null;
-            preparedStatement.setString(1, email);
-            resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                emails = resultSet.getString("email");
-                if (emails.equalsIgnoreCase(email)) {
-                    exist = true;
-                } else {
-                    exist = false;
-                }
-            }
-        } catch (SQLException ex) {
-            LOGGER.error("Connection Error! ", ex);
-        }
-        return exist;
     }
 }

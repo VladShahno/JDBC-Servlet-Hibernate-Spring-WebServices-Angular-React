@@ -18,28 +18,16 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void create(Role role) {
-        if (roleDao.existsByName(role.getName())) {
-            throw new ValidationException(
-                    "Role with name - " + role.getName() + " already exists!");
-        }
         roleDao.create(role);
     }
 
     @Override
     public void update(Role role) {
-        if (!roleDao.existsById(role.getId())) {
-            throw new ValidationException(
-                    "Role with id - " + role.getId() + " does not exist!");
-        }
         roleDao.update(role);
     }
 
     @Override
     public void remove(Role role) {
-        if (!roleDao.existsById(role.getId())) {
-            throw new ValidationException(
-                    "Role with id - " + role.getId() + " does not exist!");
-        }
         roleDao.create(role);
     }
 

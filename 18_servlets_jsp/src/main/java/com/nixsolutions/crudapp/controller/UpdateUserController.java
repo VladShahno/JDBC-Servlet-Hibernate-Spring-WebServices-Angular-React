@@ -2,7 +2,6 @@ package com.nixsolutions.crudapp.controller;
 
 import com.nixsolutions.crudapp.entity.Role;
 import com.nixsolutions.crudapp.entity.User;
-import com.nixsolutions.crudapp.exception.ValidationException;
 import com.nixsolutions.crudapp.service.RoleService;
 import com.nixsolutions.crudapp.service.UserService;
 import com.nixsolutions.crudapp.service.impl.RoleServiceImpl;
@@ -31,10 +30,13 @@ public class UpdateUserController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+
         User user = userService.findByLogin(req.getParameter("login"));
         req.setAttribute("user", user);
         List<Role> roles = roleService.findAll();
         req.setAttribute("roles", roles);
+        Long roleIdFromDb = user.getRole().getId();
+        req.setAttribute("selectedRoleId", roleIdFromDb);
         req.getRequestDispatcher("/WEB-INF/views/update_user.jsp")
                 .forward(req, resp);
     }
@@ -42,35 +44,40 @@ public class UpdateUserController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+
         String login = req.getParameter("login");
         User user = userService.findByLogin(login);
         String email = req.getParameter("email");
         String password = req.getParameter("password");
         String firstName = req.getParameter("first_name");
         String lastName = req.getParameter("last_name");
-        Date date = java.sql.Date.valueOf(req.getParameter("birthday"));
-        Long roleId = Long.valueOf(Integer.parseInt(req.getParameter("role")));
-        req.setAttribute("selectedRoleId", roleId);
+        Date date = Date.valueOf(req.getParameter("birthday"));
+        Long roleId = Long.valueOf((req.getParameter("role")));
         Role role;
         user.setLastName(lastName);
         user.setFirstName(firstName);
         if (password.length() > 0) {
             user.setPassword(password);
         }
-        user.setEmail(email);
         user.setBirthday(date);
-        try {
-            role = roleService.findById(roleId);
-            user.setRole(role);
+        role = roleService.findById(roleId);
+        user.setRole(role);
+        if ((email.equals(user.getEmail()) | userService.findByEmail(email) == null)) {
+            user.setEmail(email);
             userService.update(user);
-        } catch (ValidationException e) {
+            resp.sendRedirect(getServletContext().getContextPath() + "/home");
+        } else {
             String emailError = "User with such email had been already created!";
             req.setAttribute("emailError", emailError);
             req.setAttribute("user", user);
+            user.setEmail(email);
+            List<Role> roles = roleService.findAll();
+            req.setAttribute("roles", roles);
+            Long roleIdFromDb = user.getRole().getId();
+            req.setAttribute("selectedRoleId", roleIdFromDb);
             req.getRequestDispatcher("/WEB-INF/views/update_user.jsp")
                     .forward(req, resp);
             return;
         }
-        resp.sendRedirect(getServletContext().getContextPath() + "/home");
     }
 }

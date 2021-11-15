@@ -13,11 +13,11 @@
         <div style="text-align: center; width: 40%; margin: 0 auto;" id="message">
             <span id="success-message">${message}</span>
         </div>
-        <form class="ajax-form" id="pwreset" action="${pageContext.request.contextPath}/new" method="post" id="reg-form" style="display: flex;
+        <form class="ajax-form" id="pwreset" action="${pageContext.request.contextPath}/new" method="post" style="display: flex;
         flex-direction: column; width: 50%; margin: 0 auto">
             <div id="loginError"><span>${loginError}</span></div>
             <label for="user_login">Enter your login:</label>
-            <input type="text" name="login" id="user_login" class="form-control" required>
+            <input type="text" name="login" id="user_login" class="form-control" required value="${user.login}">
             <label for="user_password">Enter your password:</label>
             <input type="password" name="password" id="user_password" class="form-control">
             <label for="password">Confirm your password:</label>
@@ -25,13 +25,14 @@
             <div id="divCheckPassword"></div>
             <div style="margin-top: 5px" id="emailError"><span>${emailError}</span></div>
             <label for="user_email">Enter your email:</label>
-            <input type="email" name="email" id="user_email" class="form-control" required>
+            <input type="email" name="email" id="user_email" class="form-control" required value="${user.email}">
             <label for="user_firstname">Enter your first name:</label>
-            <input type="text" name="first_name" id="user_firstname" class="form-control" required>
+            <input type="text" name="first_name" id="user_firstname" class="form-control" required value="${user.firstName}">
             <label for="user_lastname">Enter your last name:</label>
-            <input type="text" name="last_name" id="user_lastname" class="form-control" required>
+            <input type="text" name="last_name" id="user_lastname" class="form-control" required value="${user.lastName}">
+            <div id="dateError"><span>${dateError}</span></div>
             <label for="user_birthday">Choose your birthday date:</label>
-            <input type="date" name="birthday" id="user_birthday" class="form-control" required>
+            <input type="date" name="birthday" id="user_birthday" class="form-control" required value="${user.birthday}"">
             <label for="role">Select your role:</label>
             <select name="role" class="form-control">
                 <c:forEach items="${roles}" var="role">
@@ -59,8 +60,12 @@
                 document.getElementById("user_password").style.borderColor = "#ff0000";
                 document.getElementById("new_user_password").style.borderColor = "#ff0000";
                 match = false;
-            }
-            return match;
+            }else {
+                $("#divCheckPassword").html("Passwords match!")
+                document.getElementById("user_password").style.borderColor = "green";
+                document.getElementById("new_user_password").style.borderColor = "green";
+             }
+                return match;
         }
         document.getElementById('pwreset').onsubmit = verifyPassword;
         $(document).ready(function () { $("#new_user_password").keyup(isPasswordMatch);
