@@ -62,7 +62,21 @@ public class UpdateUserController extends HttpServlet {
         user.setBirthday(date);
         role = roleService.findById(roleId);
         user.setRole(role);
+        List<Role> roles = roleService.findAll();
+        Long roleIdFromDb = user.getRole().getId();
         if ((email.equals(user.getEmail()) | userService.findByEmail(email) == null)) {
+            if (date == null || date.before(Date.valueOf("1900-01-01"))
+                    || date.after(new Date(new java.util.Date().getTime()))) {
+                String dateError = "Date is incorrect, please enter the right date!";
+                req.setAttribute("dateError", dateError);
+                req.setAttribute("user", user);
+                user.setEmail(email);
+                req.setAttribute("roles", roles);
+                req.setAttribute("selectedRoleId", roleIdFromDb);
+                req.getRequestDispatcher("/WEB-INF/views/update_user.jsp")
+                        .forward(req, resp);
+                return;
+            }
             user.setEmail(email);
             userService.update(user);
             resp.sendRedirect(getServletContext().getContextPath() + "/home");
@@ -71,9 +85,7 @@ public class UpdateUserController extends HttpServlet {
             req.setAttribute("emailError", emailError);
             req.setAttribute("user", user);
             user.setEmail(email);
-            List<Role> roles = roleService.findAll();
             req.setAttribute("roles", roles);
-            Long roleIdFromDb = user.getRole().getId();
             req.setAttribute("selectedRoleId", roleIdFromDb);
             req.getRequestDispatcher("/WEB-INF/views/update_user.jsp")
                     .forward(req, resp);
