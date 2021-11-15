@@ -63,7 +63,7 @@ public class CreateUserController extends HttpServlet {
         List<Role> roles = roleService.findAll();
         Long roleIdFromDb = user.getRole().getId();
 
-        if (userService.findByLogin(login).getLogin() != null) {
+        if (userService.findByLogin(login) != null) {
             String loginError = "User with such login had been already created!";
             req.setAttribute("loginError", loginError);
             req.setAttribute("user", user);
@@ -72,7 +72,7 @@ public class CreateUserController extends HttpServlet {
             req.getRequestDispatcher("/WEB-INF/views/create_user.jsp")
                     .forward(req, resp);
             return;
-        } else if (userService.findByEmail(email).getEmail() != null) {
+        } else if (userService.findByEmail(email) != null) {
             String emailError = "User with such email had been already created!";
             req.setAttribute("emailError", emailError);
             req.setAttribute("user", user);

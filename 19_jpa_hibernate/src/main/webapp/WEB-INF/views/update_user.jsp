@@ -29,6 +29,7 @@
             <label for="user_lastname">Enter your last name:</label>
             <input type="text" name="last_name" id="user_lastname" class="form-control"
                    required value="${user.lastName}">
+            <div id="dateError"><span>${dateError}</span></div>
             <label for="user_birthday">Choose your birthday date:</label>
             <input type="date" name="birthday" id="user_birthday" class="form-control"
                    required value="${user.birthday}">
@@ -60,12 +61,12 @@
                 document.getElementById("user_password").style.borderColor = "#ff0000";
                 document.getElementById("new_user_password").style.borderColor = "#ff0000";
                 match = false;
-            }else {
-                $("#divCheckPassword").html("Passwords match!")
-                document.getElementById("user_password").style.borderColor = "green";
-                document.getElementById("new_user_password").style.borderColor = "green";
-            }
-                return match;
+            } else {
+                 $("#divCheckPassword").html("Passwords match!")
+                 document.getElementById("user_password").style.borderColor = "green";
+                 document.getElementById("new_user_password").style.borderColor = "green";
+                }
+            return match;
         }
         document.getElementById('pwreset').onsubmit = verifyPassword;
         $(document).ready(function () { $("#new_user_password").keyup(isPasswordMatch);

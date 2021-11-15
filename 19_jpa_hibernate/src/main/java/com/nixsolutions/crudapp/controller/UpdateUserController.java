@@ -64,7 +64,8 @@ public class UpdateUserController extends HttpServlet {
         user.setRole(role);
         List<Role> roles = roleService.findAll();
         Long roleIdFromDb = user.getRole().getId();
-        if ((email.equals(user.getEmail()) | userService.findByEmail(email) == null)) {
+        if ((email.equals(user.getEmail())
+                | userService.findByEmail(email) == null)) {
             if (date == null || date.before(Date.valueOf("1900-01-01"))
                     || date.after(new Date(new java.util.Date().getTime()))) {
                 String dateError = "Date is incorrect, please enter the right date!";

@@ -1,9 +1,8 @@
 package com.nixsolutions.crudapp.service.impl;
 
 import com.nixsolutions.crudapp.dao.RoleDao;
-import com.nixsolutions.crudapp.dao.impl.JdbcRoleDaoImpl;
+import com.nixsolutions.crudapp.dao.impl.HibernateRoleDao;
 import com.nixsolutions.crudapp.entity.Role;
-import com.nixsolutions.crudapp.exception.ValidationException;
 import com.nixsolutions.crudapp.service.RoleService;
 
 import java.util.List;
@@ -13,7 +12,7 @@ public class RoleServiceImpl implements RoleService {
     private RoleDao roleDao;
 
     public RoleServiceImpl() {
-        roleDao = new JdbcRoleDaoImpl();
+        roleDao = new HibernateRoleDao();
     }
 
     @Override

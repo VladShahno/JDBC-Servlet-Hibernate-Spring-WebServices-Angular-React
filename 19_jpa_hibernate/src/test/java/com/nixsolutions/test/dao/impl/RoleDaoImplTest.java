@@ -4,9 +4,9 @@ import com.github.database.rider.core.DBUnitRule;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.SeedStrategy;
 import com.nixsolutions.crudapp.dao.RoleDao;
-import com.nixsolutions.crudapp.dao.impl.JdbcRoleDaoImpl;
+import com.nixsolutions.crudapp.dao.impl.HibernateRoleDao;
 import com.nixsolutions.crudapp.entity.Role;
-import com.nixsolutions.crudapp.util.DataSourceUtil;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(JUnit4.class)
 public class RoleDaoImplTest {
 
-    RoleDao roleDao = new JdbcRoleDaoImpl();
+    RoleDao roleDao = new HibernateRoleDao();
 
     @Rule
     public DBUnitRule dbUnitRule = DBUnitRule.instance(

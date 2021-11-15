@@ -1,4 +1,4 @@
-package com.nixsolutions.crudapp.util;
+package com.nixsolutions.test.dao.impl;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class DataSourceUtil {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(
             DataSourceUtil.class);
 
@@ -51,3 +50,4 @@ public class DataSourceUtil {
         }
     }
 }
+
