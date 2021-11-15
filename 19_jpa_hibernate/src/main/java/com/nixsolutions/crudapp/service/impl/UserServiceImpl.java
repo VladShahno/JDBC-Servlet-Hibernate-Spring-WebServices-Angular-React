@@ -1,7 +1,7 @@
 package com.nixsolutions.crudapp.service.impl;
 
 import com.nixsolutions.crudapp.dao.UserDao;
-import com.nixsolutions.crudapp.dao.impl.JdbcUserDaoImpl;
+import com.nixsolutions.crudapp.dao.impl.HibernateUserDao;
 import com.nixsolutions.crudapp.entity.User;
 import com.nixsolutions.crudapp.service.UserService;
 
@@ -12,7 +12,7 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     public UserServiceImpl() {
-        userDao = new JdbcUserDaoImpl();
+        userDao = new HibernateUserDao();
     }
 
     @Override

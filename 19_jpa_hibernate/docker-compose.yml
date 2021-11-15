@@ -7,7 +7,7 @@ services:
     ports:
       - "8082:8082"
     volumes:
-      - ./DDL_18_Servlet.sql:/docker-entrypoint-initdb.d/DDL_18_Servlet.sql
+      - ./DDL_Docker.sql:/docker-entrypoint-initdb.d/DDL_Docker.sql
     restart: always
 
   app:

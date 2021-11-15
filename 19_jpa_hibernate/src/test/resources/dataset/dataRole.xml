@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dataset>
-    <ROLE ROLE_ID="1" ROLE_NAME="king"/>
-    <ROLE ROLE_ID='2' ROLE_NAME='bodyPositive'/>
+    <ROLE ID="1" NAME="king"/>
+    <ROLE ID='2' NAME='bodyPositive'/>
 </dataset>

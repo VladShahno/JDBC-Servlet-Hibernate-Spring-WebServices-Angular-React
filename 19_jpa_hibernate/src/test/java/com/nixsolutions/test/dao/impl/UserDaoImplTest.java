@@ -4,10 +4,9 @@ import com.github.database.rider.core.DBUnitRule;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.SeedStrategy;
 import com.nixsolutions.crudapp.dao.UserDao;
-import com.nixsolutions.crudapp.dao.impl.JdbcUserDaoImpl;
+import com.nixsolutions.crudapp.dao.impl.HibernateUserDao;
 import com.nixsolutions.crudapp.entity.Role;
 import com.nixsolutions.crudapp.entity.User;
-import com.nixsolutions.crudapp.util.DataSourceUtil;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(JUnit4.class)
 public class UserDaoImplTest {
 
-    UserDao userDao = new JdbcUserDaoImpl();
+    UserDao userDao = new HibernateUserDao();
 
     @Rule
     public DBUnitRule dbUnitRule = DBUnitRule.instance(
@@ -105,7 +104,7 @@ public class UserDaoImplTest {
 
     public User getNewUser() {
         User user = new User();
-        Role role = new Role(1L,"king");
+        Role role = new Role(1L, "king");
         user.setId(1L);
         user.setLogin("vlad");
         user.setPassword("123");
