@@ -193,4 +193,52 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
         user.setRole(roleDao.findById(resultSet.getLong("ROLE_ID")));
         return user;
     }
+
+    public boolean existsByLogin(String login) {
+
+        boolean exist = false;
+        ResultSet resultSet;
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(
+                SELECT_USER_BY_LOGIN)) {
+            String logins;
+            preparedStatement.setString(1, login);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                logins = resultSet.getString("login");
+                if (logins.equalsIgnoreCase(login)) {
+                    exist = true;
+                } else {
+                    exist = false;
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("Connection Error! ", ex);
+        }
+        return exist;
+    }
+
+    public boolean existsByEmail(String email) {
+
+        boolean exist = false;
+        ResultSet resultSet;
+        try (Connection connection = getConnection(); PreparedStatement preparedStatement = connection.prepareStatement(
+                SELECT_USER_BY_EMAIL)) {
+            String emails;
+            preparedStatement.setString(1, email);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                emails = resultSet.getString("email");
+                if (emails.equalsIgnoreCase(email)) {
+                    exist = true;
+                } else {
+                    exist = false;
+                }
+            }
+        } catch (SQLException ex) {
+            LOGGER.error("Connection Error! ", ex);
+        }
+        return exist;
+    }
 }

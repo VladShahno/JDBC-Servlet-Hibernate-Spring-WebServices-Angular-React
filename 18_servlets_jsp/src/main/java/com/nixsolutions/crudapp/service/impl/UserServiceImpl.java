@@ -42,11 +42,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
+
         return userDao.findByEmail(email);
     }
 
     @Override
     public User findById(Long id) {
         return userDao.findById(id);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userDao.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByLogin(String login) {
+        return userDao.existsByLogin(login);
     }
 }

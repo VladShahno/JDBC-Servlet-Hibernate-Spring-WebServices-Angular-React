@@ -3,7 +3,6 @@ package com.nixsolutions.crudapp.service.impl;
 import com.nixsolutions.crudapp.dao.RoleDao;
 import com.nixsolutions.crudapp.dao.impl.JdbcRoleDaoImpl;
 import com.nixsolutions.crudapp.entity.Role;
-import com.nixsolutions.crudapp.exception.ValidationException;
 import com.nixsolutions.crudapp.service.RoleService;
 
 import java.util.List;

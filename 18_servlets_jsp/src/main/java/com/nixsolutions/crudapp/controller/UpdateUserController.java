@@ -14,7 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
-import java.util.List;
+
+import static com.nixsolutions.crudapp.util.UserAttributesUtil.setDateError;
+import static com.nixsolutions.crudapp.util.UserAttributesUtil.setEmailError;
+import static com.nixsolutions.crudapp.util.UserAttributesUtil.setRolesAttribute;
+import static com.nixsolutions.crudapp.util.UserAttributesUtil.setSelectedRoleId;
 
 @WebServlet("/users/update")
 public class UpdateUserController extends HttpServlet {
@@ -33,10 +37,8 @@ public class UpdateUserController extends HttpServlet {
 
         User user = userService.findByLogin(req.getParameter("login"));
         req.setAttribute("user", user);
-        List<Role> roles = roleService.findAll();
-        req.setAttribute("roles", roles);
-        Long roleIdFromDb = user.getRole().getId();
-        req.setAttribute("selectedRoleId", roleIdFromDb);
+        setRolesAttribute(req);
+        setSelectedRoleId(req, user);
         req.getRequestDispatcher("/WEB-INF/views/update_user.jsp")
                 .forward(req, resp);
     }
@@ -62,17 +64,19 @@ public class UpdateUserController extends HttpServlet {
         user.setBirthday(date);
         role = roleService.findById(roleId);
         user.setRole(role);
-        List<Role> roles = roleService.findAll();
-        Long roleIdFromDb = user.getRole().getId();
-        if ((email.equals(user.getEmail()) | userService.findByEmail(email) == null)) {
+
+        boolean validEmail = email.equals(user.getEmail());
+        if (!validEmail) {
+            validEmail = !userService.existsByEmail(email);
+        }
+        if (validEmail) {
             if (date == null || date.before(Date.valueOf("1900-01-01"))
                     || date.after(new Date(new java.util.Date().getTime()))) {
-                String dateError = "Date is incorrect, please enter the right date!";
-                req.setAttribute("dateError", dateError);
+                setDateError(req);
                 req.setAttribute("user", user);
                 user.setEmail(email);
-                req.setAttribute("roles", roles);
-                req.setAttribute("selectedRoleId", roleIdFromDb);
+                setRolesAttribute(req);
+                setSelectedRoleId(req, user);
                 req.getRequestDispatcher("/WEB-INF/views/update_user.jsp")
                         .forward(req, resp);
                 return;
@@ -81,15 +85,13 @@ public class UpdateUserController extends HttpServlet {
             userService.update(user);
             resp.sendRedirect(getServletContext().getContextPath() + "/home");
         } else {
-            String emailError = "User with such email had been already created!";
-            req.setAttribute("emailError", emailError);
+            setEmailError(req);
             req.setAttribute("user", user);
             user.setEmail(email);
-            req.setAttribute("roles", roles);
-            req.setAttribute("selectedRoleId", roleIdFromDb);
+            setRolesAttribute(req);
+            setSelectedRoleId(req, user);
             req.getRequestDispatcher("/WEB-INF/views/update_user.jsp")
                     .forward(req, resp);
-            return;
         }
     }
 }

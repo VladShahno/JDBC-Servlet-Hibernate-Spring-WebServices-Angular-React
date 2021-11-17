@@ -2,15 +2,21 @@ package com.nixsolutions.crudapp.util;
 
 import com.nixsolutions.crudapp.entity.User;
 
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
+import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.Tag;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-public class UserListTag extends SimpleTagSupport {
+public class UserListTag implements Tag {
+
+    private PageContext pageContext;
+
+    private Tag parent;
 
     private List<User> users;
 
@@ -22,14 +28,48 @@ public class UserListTag extends SimpleTagSupport {
         this.users = users;
     }
 
+    @Override
+    public void setParent(Tag t) {
+        this.parent = t;
+    }
+
+    @Override
+    public Tag getParent() {
+        return parent;
+    }
+
+    @Override
+    public int doStartTag() throws JspException {
+        try {
+            doTag();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return SKIP_BODY;
+    }
+
+    @Override
+    public void release() {
+    }
+
+    @Override
+    public void setPageContext(PageContext pageContext) {
+        this.pageContext = pageContext;
+    }
+
+    @Override
+    public int doEndTag() throws JspException {
+        return EVAL_PAGE;
+    }
+
     public long getAge(Date birthday) {
         return ChronoUnit.YEARS.between(birthday.toLocalDate(),
                 LocalDate.now());
     }
 
-    @Override
     public void doTag() throws IOException {
-        JspWriter out = getJspContext().getOut();
+
+        JspWriter out = pageContext.getOut();
         if (users.size() > 0) {
             StringBuilder output = new StringBuilder();
             output.append("<table class=\"table table-bordered\" id=\"users\">"

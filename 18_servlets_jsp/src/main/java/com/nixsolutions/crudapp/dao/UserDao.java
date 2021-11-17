@@ -13,4 +13,8 @@ public interface UserDao extends Dao<User> {
     User findByLogin(String login);
 
     User findByEmail(String email);
+
+    boolean existsByLogin(String login);
+
+    boolean existsByEmail(String login);
 }
