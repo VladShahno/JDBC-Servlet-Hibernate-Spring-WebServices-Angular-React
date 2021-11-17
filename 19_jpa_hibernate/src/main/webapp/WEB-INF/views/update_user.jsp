@@ -17,7 +17,7 @@
             <label for="user_password">Enter your password:</label>
             <input type="password" name="password" id="user_password" class="form-control">
             <label for="password">Confirm your password:</label>
-            <input type="password" name="password" id="new_user_password" class="form-control " onChange="verifyPassword();" >
+            <input type="password" name="password" id="new_user_password" class="form-control ">
             <div id="divCheckPassword"></div>
             <div><span>${emailError}</span></div>
             <label for="user_email">Enter your email:</label>
@@ -61,12 +61,12 @@
                 document.getElementById("user_password").style.borderColor = "#ff0000";
                 document.getElementById("new_user_password").style.borderColor = "#ff0000";
                 match = false;
-            } else {
-                 $("#divCheckPassword").html("Passwords match!")
-                 document.getElementById("user_password").style.borderColor = "green";
-                 document.getElementById("new_user_password").style.borderColor = "green";
-                }
-            return match;
+            }else {
+                $("#divCheckPassword").html(" ");
+                document.getElementById("user_password").style.borderColor = "green";
+                document.getElementById("new_user_password").style.borderColor = "green";
+            }
+                return match;
         }
         document.getElementById('pwreset').onsubmit = verifyPassword;
         $(document).ready(function () { $("#new_user_password").keyup(isPasswordMatch);

@@ -49,4 +49,14 @@ public class UserServiceImpl implements UserService {
     public User findById(Long id) {
         return userDao.findById(id);
     }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userDao.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByLogin(String login) {
+        return userDao.existsByLogin(login);
+    }
 }

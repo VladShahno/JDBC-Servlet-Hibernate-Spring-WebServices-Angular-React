@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
+import java.util.Optional;
 
 public class HibernateUserDao extends AbstractDao implements UserDao {
 
@@ -143,5 +144,24 @@ public class HibernateUserDao extends AbstractDao implements UserDao {
                     "There is an error while " + "getting user via email: "
                             + email, e);
         }
+    }
+
+    @Override
+    public boolean existsByLogin(String login) {
+        Session session = getSession();
+        Optional<User> result = session.createQuery(
+                        "FROM User us WHERE us.login =:login", User.class)
+                .setParameter("login", login).uniqueResultOptional();
+        return result.isPresent();
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+
+        Session session = getSession();
+        Optional<User> result = session.createQuery(
+                        "FROM User us WHERE us.email =:email", User.class)
+                .setParameter("email", email).uniqueResultOptional();
+        return result.isPresent();
     }
 }

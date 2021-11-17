@@ -33,7 +33,7 @@ public class LoginController extends HttpServlet {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
         User user = userService.findByLogin(login);
-        if (user == null) {
+        if (!userService.existsByLogin(login)) {
             req.setAttribute("error", "User with such login is not found!");
             req.getRequestDispatcher("/WEB-INF/views/login.jsp")
                     .forward(req, resp);
