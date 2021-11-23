@@ -43,6 +43,8 @@ public class CreateUserController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
+        Date date = Date.valueOf(req.getParameter("birthday"));
+
         if (userService.findByLogin(req.getParameter("login")).getLogin()
                 != null) {
             setLoginError(req);
@@ -57,11 +59,8 @@ public class CreateUserController extends HttpServlet {
             req.getRequestDispatcher("/WEB-INF/views/create_user.jsp")
                     .forward(req, resp);
             return;
-        } else if (getUserWithAttributes(req).getBirthday() == null
-                || getUserWithAttributes(req).getBirthday()
-                .before(Date.valueOf("1900-01-01")) || getUserWithAttributes(
-                req).getBirthday()
-                .after(new Date(new java.util.Date().getTime()))) {
+        } else if (date == null || date.before(Date.valueOf("1900-01-01"))
+                || date.after(new Date(new java.util.Date().getTime()))) {
             setDateError(req);
             req.setAttribute("user", getUserWithAttributes(req));
             req.getRequestDispatcher("/WEB-INF/views/create_user.jsp")

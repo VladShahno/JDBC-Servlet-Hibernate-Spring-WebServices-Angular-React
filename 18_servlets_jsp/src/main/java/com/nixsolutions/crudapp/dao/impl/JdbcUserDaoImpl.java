@@ -206,11 +206,7 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
 
             while (resultSet.next()) {
                 logins = resultSet.getString("login");
-                if (logins.equalsIgnoreCase(login)) {
-                    exist = true;
-                } else {
-                    exist = false;
-                }
+                exist = logins.equalsIgnoreCase(login);
             }
         } catch (SQLException ex) {
             LOGGER.error("Connection Error! ", ex);
@@ -230,11 +226,7 @@ public class JdbcUserDaoImpl extends AbstractJdbcDao implements UserDao {
 
             while (resultSet.next()) {
                 emails = resultSet.getString("email");
-                if (emails.equalsIgnoreCase(email)) {
-                    exist = true;
-                } else {
-                    exist = false;
-                }
+                exist = emails.equalsIgnoreCase(email);
             }
         } catch (SQLException ex) {
             LOGGER.error("Connection Error! ", ex);

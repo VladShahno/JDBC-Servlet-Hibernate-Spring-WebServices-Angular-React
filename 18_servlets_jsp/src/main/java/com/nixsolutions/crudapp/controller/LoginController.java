@@ -15,7 +15,7 @@ import java.io.IOException;
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
 
-    private UserService userService;
+    private final UserService userService;
 
     public LoginController() {
         userService = new UserServiceImpl();
@@ -32,12 +32,14 @@ public class LoginController extends HttpServlet {
             throws ServletException, IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-        User user = userService.findByLogin(login);
-        if (!userService.existsByLogin(user.getLogin())) {
+        User user;
+        if (!userService.existsByLogin(login)) {
             req.setAttribute("error", "User with such login is not found!");
             req.getRequestDispatcher("/WEB-INF/views/login.jsp")
                     .forward(req, resp);
             return;
+        } else {
+            user = userService.findByLogin(login);
         }
         if (!user.getPassword().equals(password)) {
             req.setAttribute("error", "Password is invalid, please check "

@@ -5,17 +5,13 @@ import com.nixsolutions.crudapp.entity.User;
 import com.nixsolutions.crudapp.service.RoleService;
 import com.nixsolutions.crudapp.service.impl.RoleServiceImpl;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.security.spec.RSAOtherPrimeInfo;
 import java.sql.Date;
 import java.util.List;
 
 public class UserAttributesUtil {
 
-    private static RoleService roleService = new RoleServiceImpl();
+    private static final RoleService roleService = new RoleServiceImpl();
 
     public static User getUserWithAttributes(HttpServletRequest req) {
 
