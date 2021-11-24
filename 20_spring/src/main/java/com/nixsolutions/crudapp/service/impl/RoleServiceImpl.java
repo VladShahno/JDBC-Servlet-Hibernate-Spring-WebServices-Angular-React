@@ -1,18 +1,19 @@
 package com.nixsolutions.crudapp.service.impl;
 
 import com.nixsolutions.crudapp.dao.RoleDao;
-import com.nixsolutions.crudapp.dao.impl.HibernateRoleDao;
 import com.nixsolutions.crudapp.entity.Role;
 import com.nixsolutions.crudapp.service.RoleService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class RoleServiceImpl implements RoleService {
 
-    private RoleDao roleDao;
+    private final RoleDao roleDao;
 
-    public RoleServiceImpl() {
-        roleDao = new HibernateRoleDao();
+    public RoleServiceImpl(RoleDao roleDao) {
+        this.roleDao = roleDao;
     }
 
     @Override

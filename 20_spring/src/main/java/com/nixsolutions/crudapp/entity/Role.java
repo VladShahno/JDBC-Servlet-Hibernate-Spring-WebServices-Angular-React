@@ -1,9 +1,10 @@
 package com.nixsolutions.crudapp.entity;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,16 +25,12 @@ public class Role {
     private Long id;
 
     @NotEmpty
-    @Column(name = "name", nullable = false, unique = true)
+    @NotBlank
+    @Column(name = "name", unique = true)
     private String name;
 
     public Role(Long id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Role{" + "id=" + id + ", name='" + name + '\'' + '}';
     }
 }
