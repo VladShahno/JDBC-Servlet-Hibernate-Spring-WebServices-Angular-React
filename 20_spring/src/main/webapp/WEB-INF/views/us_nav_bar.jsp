@@ -6,10 +6,6 @@
                href="${pageContext.request.contextPath}/login?logout=true">Logout</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link"
-               href="${pageContext.request.contextPath}/users/new">Add user</a>
-        </li>
-        <li class="nav-item">
             <a class="nav-link" href="${pageContext.request.contextPath}/home">Main
                 page</a>
         </li>
