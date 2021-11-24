@@ -1,6 +1,5 @@
 package com.nixsolutions.crudapp.entity;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
@@ -24,6 +25,7 @@ public class Role {
     private Long id;
 
     @NotEmpty
+    @NotBlank
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 

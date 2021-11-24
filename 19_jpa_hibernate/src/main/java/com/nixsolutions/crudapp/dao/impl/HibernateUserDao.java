@@ -29,9 +29,6 @@ public class HibernateUserDao extends AbstractDao implements UserDao {
         } catch (Exception e) {
             LOGGER.error("There is an error while creating user with login: "
                     + user.getLogin());
-            if (transaction != null) {
-                transaction.rollback();
-            }
             throw new DataProcessingException(
                     "There is an error while creating " + "a user with email: "
                             + user.getEmail(), e);

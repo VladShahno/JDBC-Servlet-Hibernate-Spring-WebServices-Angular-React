@@ -18,7 +18,9 @@ import java.io.IOException;
 @WebFilter("/*")
 public class AuthFilter implements Filter {
 
-    private UserService userService;
+    private final UserService userService;
+
+    String[] adminPages = { "/new", "/update", "/delete" };
 
     public AuthFilter() {
         userService = new UserServiceImpl();
@@ -46,17 +48,13 @@ public class AuthFilter implements Filter {
             resp.sendRedirect("/login");
             return;
         }
-        if (session.getAttribute("role").equals("USER") && url.equals("/new")
-                || session.getAttribute("role").equals("USER") && url.equals(
-                "/users/update")
-                || session.getAttribute("role").equals("USER") && url.equals(
-                "/new")
-                || session.getAttribute("role").equals("USER") && url.equals(
-                "/delete")) {
-            resp.sendError(403);
-            return;
+        for (String urls : adminPages) {
+            if (session.getAttribute("role").equals("USER") && url.equals(
+                    urls)) {
+                resp.sendError(403);
+                return;
+            }
         }
-
         filterChain.doFilter(req, resp);
     }
 

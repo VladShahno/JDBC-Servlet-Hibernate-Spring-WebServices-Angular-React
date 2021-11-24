@@ -1,6 +1,8 @@
 package com.nixsolutions.test.dao.impl;
 
 import com.github.database.rider.core.DBUnitRule;
+import com.github.database.rider.core.api.configuration.DBUnit;
+import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.core.api.dataset.SeedStrategy;
 import com.nixsolutions.crudapp.dao.RoleDao;
@@ -18,14 +20,14 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+@DBUnit(caseInsensitiveStrategy = Orthography.UPPERCASE, url = "jdbc:h2:mem:test_mem", driver = "org.h2.Driver", user = "sa")
 @RunWith(JUnit4.class)
 public class RoleDaoImplTest {
 
     RoleDao roleDao = new HibernateRoleDao();
 
     @Rule
-    public DBUnitRule dbUnitRule = DBUnitRule.instance(
-            DataSourceUtil.getConnection());
+    public DBUnitRule dbUnitRule = DBUnitRule.instance();
 
     @Test
     @DataSet(strategy = SeedStrategy.INSERT, cleanBefore = true, cleanAfter = true, executeScriptsBefore = {
