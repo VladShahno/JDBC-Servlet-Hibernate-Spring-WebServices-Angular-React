@@ -22,25 +22,25 @@ public class UserDto {
     @Size(min = 2, max = 10)
     private String login;
 
-    @NotEmpty
+    @NotNull
     @NotBlank
     private String password;
 
     @Transient
-    @NotEmpty
+    @NotNull
     @NotBlank
     private String passwordConfirm;
 
-    @NotEmpty
+    @NotNull
     @Email
     private String email;
 
-    @NotBlank
+    @NotNull
     @NotEmpty
     @Size(min = 2, max = 40)
     private String firstName;
 
-    @NotBlank
+    @NotNull
     @NotEmpty
     @Size(min = 2, max = 40)
     private String lastName;
