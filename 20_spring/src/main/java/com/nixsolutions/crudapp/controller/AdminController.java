@@ -4,18 +4,10 @@ import com.nixsolutions.crudapp.data.UserDto;
 import com.nixsolutions.crudapp.entity.Role;
 import com.nixsolutions.crudapp.entity.User;
 import com.nixsolutions.crudapp.exception.FormProcessingException;
-import com.nixsolutions.crudapp.exception.UserBirthdayException;
-import com.nixsolutions.crudapp.exception.UserPasswordEqualsException;
-import com.nixsolutions.crudapp.exception.UserWithEmailExistsException;
-import com.nixsolutions.crudapp.exception.UserWithLoginExistsException;
 import com.nixsolutions.crudapp.service.AuthenticationService;
 import com.nixsolutions.crudapp.service.RoleService;
 import com.nixsolutions.crudapp.service.UpdateUserService;
 import com.nixsolutions.crudapp.service.UserService;
-import com.nixsolutions.crudapp.util.UserFormValidator;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,18 +25,14 @@ import java.util.List;
 public class AdminController {
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
     private final UpdateUserService updateUserService;
     private final AuthenticationService authenticationService;
 
-    @Autowired
-    public AdminController(UserService userService,
-            PasswordEncoder passwordEncoder, RoleService roleService,
+    public AdminController(UserService userService, RoleService roleService,
             UpdateUserService updateUserService,
             AuthenticationService authenticationService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
         this.updateUserService = updateUserService;
         this.authenticationService = authenticationService;
@@ -52,6 +40,7 @@ public class AdminController {
 
     @GetMapping("/update")
     public String getUpdate(@RequestParam String login, Model model) {
+
         User user = userService.findByLogin(login);
         user.setPasswordConfirm(user.getPassword());
         model.addAttribute("user", user);
@@ -66,20 +55,16 @@ public class AdminController {
     public String postUpdate(@ModelAttribute("user") @Valid UserDto user,
             BindingResult bindingResult, Model model) {
 
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("user", user);
+            List<Role> roles = roleService.findAll();
+            model.addAttribute("roles", roles);
+            return "update";
+        }
         try {
-            if (bindingResult.hasErrors()) {
-                model.addAttribute("user", user);
-                List<Role> roles = roleService.findAll();
-                model.addAttribute("roles", roles);
-                return "update";
-            }
-            try {
-                updateUserService.update(user);
-            } catch (UserWithEmailExistsException | UserBirthdayException
-                    | UserPasswordEqualsException e) {
-                UserFormValidator.validate(model, e);
-            }
+            updateUserService.update(user);
         } catch (FormProcessingException e) {
+            model.addAttribute(e.getAttributeName(), e.getMessage());
             model.addAttribute("user", user);
             List<Role> roles = roleService.findAll();
             model.addAttribute("roles", roles);
@@ -89,7 +74,8 @@ public class AdminController {
     }
 
     @GetMapping("/delete")
-    public String postDelete(@RequestParam String login) {
+    public String getDeleteUser(@RequestParam String login) {
+
         User user = userService.findByLogin(login);
         userService.remove(user);
         return "redirect: /home";
@@ -97,6 +83,7 @@ public class AdminController {
 
     @GetMapping("/new")
     public String getCreate(Model model) {
+
         User user = new User();
         model.addAttribute("user", user);
         List<Role> roles = roleService.findAll();
@@ -106,22 +93,18 @@ public class AdminController {
 
     @PostMapping("/new")
     public String postCreate(@ModelAttribute("user") @Valid UserDto user,
-            BindingResult bindingResult, Model model, @RequestParam Long role) {
+            BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("user", user);
+            List<Role> roles = roleService.findAll();
+            model.addAttribute("roles", roles);
+            return "new";
+        }
         try {
-            if (bindingResult.hasErrors()) {
-                model.addAttribute("user", user);
-                List<Role> roles = roleService.findAll();
-                model.addAttribute("roles", roles);
-                return "new";
-            }
-            try {
-                user.setRole(role);
-                authenticationService.register(userService.convert(user));
-            } catch (UserWithEmailExistsException | UserWithLoginExistsException
-                    | UserBirthdayException | UserPasswordEqualsException e) {
-                UserFormValidator.validate(model, e);
-            }
+            authenticationService.register(userService.convert(user));
         } catch (FormProcessingException e) {
+            model.addAttribute(e.getAttributeName(), e.getMessage());
             model.addAttribute("user", user);
             List<Role> roles = roleService.findAll();
             model.addAttribute("roles", roles);

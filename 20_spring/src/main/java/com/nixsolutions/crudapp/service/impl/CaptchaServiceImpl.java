@@ -1,6 +1,7 @@
 package com.nixsolutions.crudapp.service.impl;
 
 import com.nixsolutions.crudapp.service.CaptchaService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.json.Json;
@@ -16,7 +17,8 @@ import java.net.URL;
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
 
-    private final String secretKey = "6LfH88MZAAAAADlt1gLb2UOmcahycYtBCsxe5LmC";
+    @Value("secret_key")
+    private String secretKey;
 
     @Override
     public boolean verify(String captcha) {

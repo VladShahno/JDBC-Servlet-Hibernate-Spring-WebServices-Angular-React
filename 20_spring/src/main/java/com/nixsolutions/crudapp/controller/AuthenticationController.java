@@ -3,16 +3,9 @@ package com.nixsolutions.crudapp.controller;
 import com.nixsolutions.crudapp.entity.Role;
 import com.nixsolutions.crudapp.entity.User;
 import com.nixsolutions.crudapp.exception.FormProcessingException;
-import com.nixsolutions.crudapp.exception.UserPasswordEqualsException;
-import com.nixsolutions.crudapp.exception.UserWithEmailExistsException;
-import com.nixsolutions.crudapp.exception.UserWithLoginExistsException;
-import com.nixsolutions.crudapp.exception.UserBirthdayException;
 import com.nixsolutions.crudapp.service.AuthenticationService;
 import com.nixsolutions.crudapp.service.CaptchaService;
 import com.nixsolutions.crudapp.service.RoleService;
-import com.nixsolutions.crudapp.service.UserService;
-import com.nixsolutions.crudapp.util.UserFormValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -32,18 +25,14 @@ import java.util.List;
 @Controller
 public class AuthenticationController {
 
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
     private final CaptchaService captchaService;
-    private UserService userService;
-    private RoleService roleService;
+    private final RoleService roleService;
 
-    @Autowired
     public AuthenticationController(AuthenticationService authenticationService,
-            CaptchaService captchaService, UserService userService,
-            RoleService roleService) {
+            CaptchaService captchaService, RoleService roleService) {
         this.authenticationService = authenticationService;
         this.captchaService = captchaService;
-        this.userService = userService;
         this.roleService = roleService;
     }
 
@@ -62,7 +51,6 @@ public class AuthenticationController {
             boolean verify = captchaService.verify(gRecaptchaResponse);
             if (!verify) {
                 model.addAttribute("captchaError", "Please enter the captcha!");
-                throw new FormProcessingException("captcha does not match!");
             }
             if (bindingResult.hasErrors()) {
                 model.addAttribute("user", user);
@@ -70,14 +58,10 @@ public class AuthenticationController {
                 model.addAttribute("roles", roles);
                 return "registration";
             }
-            try {
-                user.setRole(roleService.findByName("USER"));
-                authenticationService.register(user);
-            } catch (UserWithEmailExistsException | UserWithLoginExistsException
-                    | UserBirthdayException | UserPasswordEqualsException e) {
-                UserFormValidator.validate(model, e);
-            }
+            user.setRole(roleService.findByName("USER"));
+            authenticationService.register(user);
         } catch (FormProcessingException e) {
+            model.addAttribute(e.getAttributeName(), e.getMessage());
             model.addAttribute("user", user);
             return "registration";
         }
