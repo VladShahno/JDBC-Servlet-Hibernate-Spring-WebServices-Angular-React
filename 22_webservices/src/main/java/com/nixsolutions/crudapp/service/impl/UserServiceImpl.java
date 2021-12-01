@@ -6,6 +6,7 @@ import com.nixsolutions.crudapp.entity.Role;
 import com.nixsolutions.crudapp.entity.User;
 import com.nixsolutions.crudapp.service.RoleService;
 import com.nixsolutions.crudapp.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,16 +16,12 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
-    private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
-
-    public UserServiceImpl(UserDao userDao, RoleService roleService,
-            PasswordEncoder passwordEncoder) {
-        this.userDao = userDao;
-        this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private RoleService roleService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void create(User user) {
@@ -94,8 +91,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User convert(UserDto dto) {
-        System.out.println(dto);
+    public User convertFromDtoToUser(UserDto dto) {
         return new User(dto.getLogin(), dto.getPassword(),
                 dto.getPasswordConfirm(), dto.getEmail(), dto.getFirstName(),
                 dto.getLastName(), dto.getBirthday(),

@@ -102,7 +102,7 @@ public class AdminController {
             return "new";
         }
         try {
-            authenticationService.register(userService.convert(user));
+            authenticationService.register(userService.convertFromDtoToUser(user));
         } catch (FormProcessingException e) {
             model.addAttribute(e.getAttributeName(), e.getMessage());
             model.addAttribute("user", user);

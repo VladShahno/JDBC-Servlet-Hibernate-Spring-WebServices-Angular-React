@@ -1,9 +1,19 @@
 package com.nixsolutions.crudapp.config;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.nixsolutions.crudapp.controller.ExceptionResource;
+import com.nixsolutions.crudapp.controller.RestController;
+import com.nixsolutions.crudapp.service.UserService;
+import com.nixsolutions.crudapp.service.impl.UserServiceImpl;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.cxf.bus.spring.SpringBus;
+import org.apache.cxf.endpoint.Server;
+import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
+import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -13,6 +23,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.ext.RuntimeDelegate;
 import java.util.Properties;
 
 @Configuration
@@ -27,6 +40,56 @@ public class AppConfig {
 
     public AppConfig(Environment env) {
         this.env = env;
+    }
+
+    @ApplicationPath("/")
+    public class JaxRsApiApplication extends Application {
+    }
+
+    @Bean(destroyMethod = "shutdown")
+    public SpringBus cxf() {
+        return new SpringBus();
+    }
+
+    @Bean
+    @DependsOn("cxf")
+    public Server jaxRsServer() {
+
+        JAXRSServerFactoryBean factory = RuntimeDelegate.getInstance()
+                .createEndpoint(jaxRsApiApplication(),
+                        JAXRSServerFactoryBean.class);
+        factory.setResourceClasses(RestController.class);
+
+        factory.setResourceProvider(RestController.class,
+                new SingletonResourceProvider(restController()));
+        factory.setAddress("/" + factory.getAddress());
+        factory.setProvider(jsonProvider());
+        return factory.create();
+    }
+
+    @Bean
+    public JaxRsApiApplication jaxRsApiApplication() {
+        return new JaxRsApiApplication();
+    }
+
+    @Bean
+    public JacksonJsonProvider jsonProvider() {
+        return new JacksonJsonProvider();
+    }
+
+    @Bean
+    public UserService userService() {
+        return new UserServiceImpl();
+    }
+
+    @Bean
+    public RestController restController() {
+        return new RestController();
+    }
+
+    @Bean
+    public ExceptionResource exceptionResource() {
+        return new ExceptionResource();
     }
 
     @Bean

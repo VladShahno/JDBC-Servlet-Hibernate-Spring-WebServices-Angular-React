@@ -22,6 +22,5 @@ public interface UserService {
     User findById(Long id);
 
     boolean existsByEmail(String email);
-
-    User convert(UserDto dto);
+    User convertFromDtoToUser(UserDto dto);
 }
