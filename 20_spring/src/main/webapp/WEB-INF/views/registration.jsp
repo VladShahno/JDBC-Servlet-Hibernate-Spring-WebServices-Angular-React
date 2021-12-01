@@ -13,7 +13,8 @@
     <form:form action="/registration" method="POST" modelAttribute="user"
                style="display: flex;
         flex-direction: column; width: 50%; margin: 0 auto">
-        <div style="margin-top: 5px"><form:errors path="login"></form:errors>
+        <div style="margin-top: 5px; color:red"><form:errors
+                path="login"></form:errors>
                 ${loginError}</div>
         <label for="login">Enter your login:</label>
         <form:input type="text" path="login" placeholder="login"
@@ -27,34 +28,37 @@
         <form:input type="password" path="passwordConfirm" class="form-control"
                     required="required"
                     placeholder="ConfirmPassword"></form:input>
-        <div style="margin-top: 5px"><form:errors path="password"></form:errors>
+        <div style="margin-top: 5px; color:red"><form:errors
+                path="password"></form:errors>
                 ${passwordError}</div>
-        <div style="margin-top: 5px"><form:errors path="email"></form:errors>
+        <div style="margin-top: 5px; color:red"><form:errors
+                path="email"></form:errors>
                 ${emailError}</div>
         <label for="email">Enter your email:</label>
         <form:input type="email" path="email" placeholder="email"
                     class="form-control" required="required"
         ></form:input>
-        <div style="margin-top: 5px">
+        <div style="margin-top: 5px; color:red">
             <form:errors path="firstName"></form:errors></div>
         <label for="firstName">Enter your first name:</label>
         <form:input type="text" path="firstName" placeholder="firstName"
                     class="form-control" required="required"
         ></form:input>
-        <div style="margin-top: 5px"><form:errors
+        <div style="margin-top: 5px; color:red"><form:errors
                 path="lastName"></form:errors></div>
         <label for="lastName">Enter your last name:</label>
         <form:input type="text" path="lastName" placeholder="lastName"
                     class="form-control" required="required"
         ></form:input>
-        <div style="margin-top: 5px"><form:errors
+        <div style="margin-top: 5px; color:red"><form:errors
                 path="birthday"></form:errors>
                 ${dateError}</div>
         <label for="birthday">Choose your birthday date:</label>
         <form:input type="date" path="birthday" placeholder="birthday"
                     class="form-control" required="required"
         ></form:input>
-        <div style="margin-top: 5px"><span>${captchaError}</span></div>
+        <div style="margin-top: 5px; color:red"><span>${captchaError}</span>
+        </div>
         <div class="g-recaptcha"
              data-sitekey="6LfH88MZAAAAAAvtYmhATJhggbeM8M0nX4eRrfVg"
              style="margin: 0 auto; margin-top: 10px;"></div>
