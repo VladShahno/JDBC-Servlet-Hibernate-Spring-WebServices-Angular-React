@@ -1,10 +1,7 @@
 package com.nixsolutions.crudapp.controller;
 
-import com.nixsolutions.crudapp.entity.Role;
 import com.nixsolutions.crudapp.entity.User;
-import com.nixsolutions.crudapp.service.RoleService;
 import com.nixsolutions.crudapp.service.UserService;
-import com.nixsolutions.crudapp.service.impl.RoleServiceImpl;
 import com.nixsolutions.crudapp.service.impl.UserServiceImpl;
 
 import javax.servlet.ServletException;
@@ -48,41 +45,37 @@ public class UpdateUserController extends HttpServlet {
             throws ServletException, IOException {
 
         User user = userService.findByLogin(req.getParameter("login"));
-        String email = req.getParameter("email");
-        Date date = Date.valueOf(req.getParameter("birthday"));
         Long id = Long.valueOf(req.getParameter("id"));
 
-        boolean validEmail = email.equals(user.getEmail());
-        if (!validEmail) {
-            validEmail = !userService.existsByEmail(email);
-        }
-        User userError;
-        if (validEmail) {
-            if (date == null || date.before(Date.valueOf("1900-01-01"))
-                    || date.after(new Date(new java.util.Date().getTime()))) {
-                setDateError(req);
-                userError = getUserWithAttributes(req);
-                userError.setId(id);
-                req.setAttribute("user", userError);
+        User userWithAttributes = getUserWithAttributes(req);
+        if (userService.findByEmail(userWithAttributes.getEmail()) != null) {
+            if (!userService.findByLogin(user.getLogin()).getEmail()
+                    .equals(userWithAttributes.getEmail())) {
+                setEmailError(req);
+                userWithAttributes.setId(id);
+                req.setAttribute("user", userWithAttributes);
                 setRolesAttribute(req);
-                setSelectedRoleId(req, userError);
+                setSelectedRoleId(req, userWithAttributes);
                 req.getRequestDispatcher("/WEB-INF/views/update_user.jsp")
                         .forward(req, resp);
-                return;
             }
-            userError = getUserWithAttributes(req);
-            userError.setId(id);
-            userService.update(userError);
-            resp.sendRedirect(getServletContext().getContextPath() + "/home");
-        } else {
-            setEmailError(req);
-            userError = getUserWithAttributes(req);
-            userError.setId(id);
-            req.setAttribute("user", userError);
+        }
+        if (userWithAttributes.getBirthday() == null
+                || userWithAttributes.getBirthday()
+                .before(Date.valueOf("1900-01-01"))
+                || userWithAttributes.getBirthday()
+                .after(new Date(new java.util.Date().getTime()))) {
+            setDateError(req);
+            userWithAttributes.setId(id);
+            req.setAttribute("user", userWithAttributes);
             setRolesAttribute(req);
-            setSelectedRoleId(req, userError);
+            setSelectedRoleId(req, userWithAttributes);
             req.getRequestDispatcher("/WEB-INF/views/update_user.jsp")
                     .forward(req, resp);
+            return;
         }
+        userWithAttributes.setId(id);
+        userService.update(userWithAttributes);
+        resp.sendRedirect(getServletContext().getContextPath() + "/home");
     }
 }

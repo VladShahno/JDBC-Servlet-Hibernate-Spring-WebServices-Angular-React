@@ -15,7 +15,7 @@
         </div>
         <form class="ajax-form" id="pwreset" action="${pageContext.request.contextPath}/new" method="post" style="display: flex;
         flex-direction: column; width: 50%; margin: 0 auto">
-            <div id="loginError"><span>${loginError}</span></div>
+            <div style="color:red" id="loginError"><span>${loginError}</span></div>
             <label for="user_login">Enter your login:</label>
             <input type="text" name="login" id="user_login" class="form-control" required value="${user.login}">
             <label for="user_password">Enter your password:</label>
@@ -23,14 +23,14 @@
             <label for="password">Confirm your password:</label>
             <input type="password" name="password" id="new_user_password" class="form-control ">
             <div id="divCheckPassword"></div>
-            <div style="margin-top: 5px" id="emailError"><span>${emailError}</span></div>
+            <div style="margin-top: 5px; color:red" id="emailError"><span>${emailError}</span></div>
             <label for="user_email">Enter your email:</label>
             <input type="email" name="email" id="user_email" class="form-control" required value="${user.email}">
             <label for="user_firstname">Enter your first name:</label>
             <input type="text" name="first_name" id="user_firstname" class="form-control" required value="${user.firstName}">
             <label for="user_lastname">Enter your last name:</label>
             <input type="text" name="last_name" id="user_lastname" class="form-control" required value="${user.lastName}">
-            <div id="dateError"><span>${dateError}</span></div>
+            <div style="color:red" id="dateError"><span>${dateError}</span></div>
             <label for="user_birthday">Choose your birthday date:</label>
             <input type="date" name="birthday" id="user_birthday" class="form-control" required value="${user.birthday}"">
             <label for="role">Select your role:</label>

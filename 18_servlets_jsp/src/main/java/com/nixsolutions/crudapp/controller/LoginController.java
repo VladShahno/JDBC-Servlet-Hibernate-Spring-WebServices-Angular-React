@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Optional;
 
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
@@ -32,16 +33,14 @@ public class LoginController extends HttpServlet {
             throws ServletException, IOException {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
-        User user;
-        if (!userService.existsByLogin(login)) {
+        Optional<User> user = Optional.ofNullable(
+                userService.findByLogin(login));
+        if (user.isEmpty()) {
             req.setAttribute("error", "User with such login is not found!");
             req.getRequestDispatcher("/WEB-INF/views/login.jsp")
                     .forward(req, resp);
             return;
-        } else {
-            user = userService.findByLogin(login);
-        }
-        if (!user.getPassword().equals(password)) {
+        } else if (!user.get().getPassword().equals(password)) {
             req.setAttribute("error", "Password is invalid, please check "
                     + "the password you have entered");
             req.getRequestDispatcher("/WEB-INF/views/login.jsp")
@@ -49,9 +48,9 @@ public class LoginController extends HttpServlet {
             return;
         }
         HttpSession session = req.getSession();
-        session.setAttribute("login", user.getLogin());
-        session.setAttribute("role", user.getRole().getName());
-        session.setAttribute("name", user.getFirstName());
+        session.setAttribute("login", user.get().getLogin());
+        session.setAttribute("role", user.get().getRole().getName());
+        session.setAttribute("name", user.get().getFirstName());
         resp.sendRedirect(req.getContextPath() + "/home");
     }
 }

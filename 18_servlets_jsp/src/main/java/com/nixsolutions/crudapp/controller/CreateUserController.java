@@ -1,5 +1,6 @@
 package com.nixsolutions.crudapp.controller;
 
+import com.nixsolutions.crudapp.entity.User;
 import com.nixsolutions.crudapp.service.RoleService;
 import com.nixsolutions.crudapp.service.UserService;
 import com.nixsolutions.crudapp.service.impl.RoleServiceImpl;
@@ -43,31 +44,32 @@ public class CreateUserController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        Date date = Date.valueOf(req.getParameter("birthday"));
-
-        if (userService.findByLogin(req.getParameter("login")).getLogin()
-                != null) {
+        User userWithAttributes = getUserWithAttributes(req);
+        if (userService.findByLogin(userWithAttributes.getLogin()) != null) {
             setLoginError(req);
-            req.setAttribute("user", getUserWithAttributes(req));
+            req.setAttribute("user", userWithAttributes);
             req.getRequestDispatcher("/WEB-INF/views/create_user.jsp")
                     .forward(req, resp);
             return;
-        } else if (userService.findByEmail(req.getParameter("email")).getEmail()
+        } else if (userService.findByEmail(userWithAttributes.getEmail())
                 != null) {
             setEmailError(req);
-            req.setAttribute("user", getUserWithAttributes(req));
+            req.setAttribute("user", userWithAttributes);
             req.getRequestDispatcher("/WEB-INF/views/create_user.jsp")
                     .forward(req, resp);
             return;
-        } else if (date == null || date.before(Date.valueOf("1900-01-01"))
-                || date.after(new Date(new java.util.Date().getTime()))) {
+        } else if (userWithAttributes.getBirthday() == null
+                || userWithAttributes.getBirthday()
+                .before(Date.valueOf("1900-01-01"))
+                || userWithAttributes.getBirthday()
+                .after(new Date(new java.util.Date().getTime()))) {
             setDateError(req);
-            req.setAttribute("user", getUserWithAttributes(req));
+            req.setAttribute("user", userWithAttributes);
             req.getRequestDispatcher("/WEB-INF/views/create_user.jsp")
                     .forward(req, resp);
             return;
         }
-        userService.create(getUserWithAttributes(req));
+        userService.create(userWithAttributes);
         req.setAttribute("message", "You have registered successfully!");
         req.getRequestDispatcher("/WEB-INF/views/create_user.jsp")
                 .forward(req, resp);
