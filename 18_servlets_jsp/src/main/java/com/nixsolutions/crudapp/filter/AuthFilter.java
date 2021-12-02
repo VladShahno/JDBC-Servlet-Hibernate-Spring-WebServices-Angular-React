@@ -20,8 +20,6 @@ public class AuthFilter implements Filter {
 
     private final UserService userService;
 
-    String[] adminPages = { "/new", "/update", "/delete" };
-
     public AuthFilter() {
         userService = new UserServiceImpl();
     }
@@ -48,12 +46,9 @@ public class AuthFilter implements Filter {
             resp.sendRedirect("/login");
             return;
         }
-        for (String urls : adminPages) {
-            if (session.getAttribute("role").equals("USER") && url.equals(
-                    urls)) {
-                resp.sendError(403);
-                return;
-            }
+        if (session.getAttribute("role").equals("USER") && !url.equals("/home")) {
+            resp.sendError(403);
+            return;
         }
         filterChain.doFilter(req, resp);
     }
