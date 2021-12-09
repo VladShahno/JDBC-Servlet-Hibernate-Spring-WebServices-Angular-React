@@ -21,9 +21,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class RestControllerTest {
-    public static final String BASE_ADDR = "http://localhost:8080/";
+    public static final String BASE_URL = "http://localhost:8080/";
     private final Client client = ClientBuilder.newClient();
-    private final WebTarget apiTarget = client.target(BASE_ADDR + "api/");
+    private final WebTarget apiTarget = client.target(BASE_URL + "api/");
     private String token;
 
     @BeforeEach
