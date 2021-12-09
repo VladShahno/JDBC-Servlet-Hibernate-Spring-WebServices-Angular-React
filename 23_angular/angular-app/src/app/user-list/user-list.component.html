@@ -1,0 +1,30 @@
+<h2 class="text-center" style="margin-top: 10px;"> User List</h2>
+<table class="table table-bordered">
+  <thead>
+  <tr>
+    <th> Login</th>
+    <th> First Name</th>
+    <th> Last Name</th>
+    <th> Age</th>
+    <th> Role</th>
+    <th> Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let user of users">
+    <td> {{user.login}} </td>
+    <td> {{user.firstName}} </td>
+    <td> {{user.lastName}} </td>
+    <td> {{user.age}} </td>
+    <td> {{user.role}} </td>
+    <td>
+      <button (click)="updateUser(user.login)" class="btn btn-info"> Update
+      </button>
+      <button class="btn btn-danger"
+              style="margin-left: 10px" (click)="confirmDelete(user.login)">
+        Delete
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>

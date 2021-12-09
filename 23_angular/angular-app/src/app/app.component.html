@@ -1,0 +1,30 @@
+<div>
+  <nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+    <ul class="nav">
+      <li class="nav-item">
+        <a *ngIf="userService.loggedIn()" routerLink="users/all"
+           routerLinkActive="active"
+           class="nav-link">Home</a>
+      </li>
+      <li class="nav-item">
+        <a *ngIf="userService.loggedIn()" routerLink="users/new"
+           routerLinkActive="active" class="nav-link">Add
+          User</a>
+      </li>
+      <li class="nav-item">
+        <a *ngIf="userService.loggedIn()" routerLink="/login"
+           (click)="userService.logoutUser()" routerLinkActive="active"
+           class="nav-link">Logout</a>
+      </li>
+    </ul>
+  </nav>
+  <div style=" margin-left: 10px;padding-top: 10px; float: left;">
+    <p *ngIf="userService.loggedIn()" style="text-align: left">
+      <mark>{{role}} {{UserName}}</mark>
+    </p>
+  </div>
+</div>
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
+
