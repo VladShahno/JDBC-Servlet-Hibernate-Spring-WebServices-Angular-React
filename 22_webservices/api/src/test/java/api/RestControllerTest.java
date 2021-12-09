@@ -1,184 +1,132 @@
 package api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import entity.Role;
-import entity.User;
-
+import data.JwtTokenDto;
+import data.LoginDto;
+import data.PublicUserDto;
+import data.UserDtoForCreate;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.eclipse.jetty.http.HttpStatus;
-import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 
-@RunWith(JUnit4.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RestControllerTest {
+    public static final String BASE_ADDR = "http://localhost:8080/";
+    private final Client client = ClientBuilder.newClient();
+    private final WebTarget apiTarget = client.target(BASE_ADDR + "api/");
+    private String token;
 
-    private static final String REST_ENDPOINT = "http://localhost:8080/users";
-
-    private Client client;
-
-    private static User testUser;
-
-    private static ObjectMapper objectMapper;
-
-    @BeforeClass
-    public static void beforeClass() {
-        objectMapper = new ObjectMapper();
-        testUser = new User();
-
-        testUser.setEmail("Parker@gmail.com");
-        testUser.setFirstName("Peter");
-        testUser.setLastName("Parker");
-        testUser.setLogin("SpiderMan");
-        testUser.setPassword("admin");
-        testUser.setPasswordConfirm("admin");
-        testUser.setBirthday(new Date(1999 - 10 - 3));
-        testUser.setRole(new Role(2L, "ADMIN"));
-    }
-
-    @Before
-    public void setUp() {
-        client = ClientBuilder.newClient();
-        HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic(
-                "admin", "admin");
-        client.register(feature);
-    }
-
-    @After
-    public void tearUp() {
-        client.close();
-    }
-
-    @Test
-    public void testACreateUser() {
-
-        String jsonDataCreate = "{\n" + " \"birthday\": \"1999-03-10\",\n"
-                + "   \"password\": \"admin\",\n" + "\"role\": {\n"
-                + "   \"id\": 2,\n" + "\"name\": \"ADMIN\"\n" + "},\n"
-                + "\"passwordConfirm\":\"admin\",\n"
-                + "   \"lastName\":\"Parker\",\n"
-                + "   \"login\": \"SpiderMan\",\n"
-                + "   \"firstName\": \"Peter\",\n"
-                + "   \"email\": \"Parker@gmail.com\"\n" + "}";
-        Response response = client.target(REST_ENDPOINT + "/create")
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(jsonDataCreate,
+    @BeforeEach
+    public void getToken() {
+        WebTarget loginTarget = apiTarget.path("login");
+        Response response = loginTarget.request()
+                .post(Entity.entity(new LoginDto("admin", "admin"),
                         MediaType.APPLICATION_JSON));
-        System.out.println(response.readEntity(String.class));
-        Assert.assertEquals(HttpStatus.CREATED_201, response.getStatus());
+        token = "Bearer " + response.readEntity(JwtTokenDto.class).getToken();
     }
 
     @Test
-    public void testBFindByLogin() throws IOException {
+    public void getAll() {
+        WebTarget users = apiTarget.path("users/all");
+        Response response = getResponse(users);
+        System.out.println(response.getEntity());
+        PublicUserDto[] publicUserDtoArray = response.readEntity(
+                PublicUserDto[].class);
 
-        String response = client.target(REST_ENDPOINT + "/findByLogin")
-                .path(testUser.getLogin()).request(MediaType.APPLICATION_JSON)
-                .get(String.class);
-        Assert.assertTrue(response.length() > 0);
-        assertUserEquals(testUser, jsonResponseToUser(response));
+        Assertions.assertNotNull(publicUserDtoArray);
+        Assertions.assertTrue(Arrays.stream(publicUserDtoArray).anyMatch(
+                publicUserDto -> publicUserDto.getLogin().equals("admin")));
+        Assertions.assertEquals(200, response.getStatus());
+
+    }
+
+    private Response getResponse(WebTarget webTarget) {
+        Invocation.Builder invocationBuilder = webTarget.request(
+                MediaType.APPLICATION_JSON).header("Authorization", token);
+        return invocationBuilder.get();
     }
 
     @Test
-    public void testCFindByEmail() throws IOException {
+    public void getByLogin() {
+        WebTarget findByLogin = apiTarget.path("users/admin");
+        Response response = findByLogin.request(MediaType.APPLICATION_JSON)
+                .header("Authorization", token).get();
+        UserDtoForCreate admin = response.readEntity(UserDtoForCreate.class);
 
-        String response = client.target(REST_ENDPOINT + "/findByEmail")
-                .path(testUser.getEmail()).request(MediaType.APPLICATION_JSON)
-                .get(String.class);
-        Assert.assertTrue(response.length() > 0);
-        assertUserEquals(testUser, jsonResponseToUser(response));
+        Assertions.assertNotNull(admin);
+        Assertions.assertNotNull(admin.getRole());
+        Assertions.assertNotNull(admin.getEmail());
     }
 
     @Test
-    public void testDUpdateUser() {
+    public void createUser() {
 
-        String jsonDataUpdate = "{\n" + " \"birthday\": \"1999-03-10\",\n"
-                + "    \"password\": \"qwerty\",\n" + "    \"role\": 1,\n"
-                + "    \"passwordConfirm\": \"qwerty\",\n"
-                + "    \"lastName\": \"Skaletto\",\n"
-                + "    \"login\": \"SpiderMan\",\n"
-                + "    \"firstName\": \"Vito\",\n"
-                + "    \"email\": \"Vito@gmail.com\"\n" + "}";
-        Response response = client.target(REST_ENDPOINT + "/update")
-                .path(testUser.getLogin()).request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(jsonDataUpdate, MediaType.APPLICATION_JSON));
-        Assert.assertEquals(response.getStatus(), HttpStatus.OK_200);
+        UserDtoForCreate userDto = new UserDtoForCreate("admin12", "pass",
+                "pass", "email@email.com", "lastname", "firstname",
+                Date.valueOf("2000-03-10"), "ADMIN");
+
+        Map<String, String> problems = postUser(userDto);
+
+        Assertions.assertNull(problems);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, String> postUser(UserDtoForCreate userDto) {
+        WebTarget postUser = apiTarget.path("users");
+        Response response = postUser.request(MediaType.APPLICATION_JSON)
+                .header("Authorization", token)
+                .post(Entity.entity(userDto, MediaType.APPLICATION_JSON));
+        return response.readEntity(Map.class);
     }
 
     @Test
-    public void testEGetAll() throws IOException {
+    @SuppressWarnings("unchecked")
+    public void editUser() {
 
-        String response = client.target(REST_ENDPOINT + "/all")
-                .request(MediaType.APPLICATION_JSON).get(String.class);
-        Map<String, Map<String, String>> map = objectMapper.readValue(response,
+        UserDtoForCreate editUserDto = new UserDtoForCreate("admin12", "pass",
+                "pass", "email11@email.com", "FIRST", "LAST",
+                Date.valueOf("2001-01-01"), "USER");
+
+        Response response = putUser(editUserDto);
+        Map<String, String> problems = (Map<String, String>) response.readEntity(
                 Map.class);
-        List<User> users = new ArrayList<>();
-        for (String key : map.keySet()) {
-            users.add(jsonResponseToUser(map.get(key)));
-        }
-        Assert.assertNotNull(users);
-        Assert.assertTrue(users.size() > 0);
+
+        Assertions.assertNull(problems);
+        Assertions.assertEquals(editUserDto.getEmail(), "email11@email.com");
+        Assertions.assertEquals(editUserDto.getFirstName(), "FIRST");
+        Assertions.assertEquals(editUserDto.getLastName(), "LAST");
+        Assertions.assertEquals(editUserDto.getRole(), "USER");
+        Assertions.assertEquals(editUserDto.getBirthday(),
+                Date.valueOf("2001-01-01"));
+    }
+
+    private Response putUser(UserDtoForCreate userDtoForCreate) {
+        WebTarget putUserTarget = apiTarget.path("users");
+        return putUserTarget.request(MediaType.APPLICATION_JSON)
+                .header("Authorization", token)
+                .put(Entity.entity(userDtoForCreate,
+                        MediaType.APPLICATION_JSON));
     }
 
     @Test
-    public void testGRemove() {
-
-        Response response = client.target(REST_ENDPOINT + "/delete")
-                .path(testUser.getLogin()).request(MediaType.APPLICATION_JSON)
-                .delete();
-        Assert.assertEquals(response.getStatus(), HttpStatus.OK_200);
+    public void deleteUser() {
+        Response response = deleteUser("admin12");
+        Assertions.assertEquals(response.getStatus(), HttpStatus.OK_200);
     }
 
-    private void assertUserEquals(User testUser, User fromDatabase) {
-
-        Assert.assertEquals(testUser.getEmail(), fromDatabase.getEmail());
-        Assert.assertEquals(testUser.getFirstName(),
-                fromDatabase.getFirstName());
-        Assert.assertEquals(testUser.getLastName(), fromDatabase.getLastName());
-        Assert.assertEquals(testUser.getLogin(), fromDatabase.getLogin());
-    }
-
-    private User jsonResponseToUser(String response) throws IOException {
-
-        Map<String, String> map = objectMapper.readValue(response, Map.class);
-        User user = new User();
-        user.setLastName(map.get("last_name"));
-        user.setFirstName(map.get("first_name"));
-        user.setLogin(map.get("login"));
-        user.setEmail(map.get("email"));
-        user.setPassword(map.get("password"));
-        user.setPasswordConfirm(map.get("passwordConfirm"));
-        user.setBirthday(Date.valueOf(map.get("birthday")));
-        return user;
-    }
-
-    private User jsonResponseToUser(Map<String, String> response) {
-
-        User user = new User();
-        user.setLastName(response.get("last_name"));
-        user.setFirstName(response.get("first_name"));
-        user.setLogin(response.get("login"));
-        user.setPassword(response.get("password"));
-        user.setEmail(response.get("email"));
-        user.setBirthday(Date.valueOf(response.get("birthday")));
-        return user;
+    private Response deleteUser(String login) {
+        WebTarget deleteUserTarget = apiTarget.path("users/" + login);
+        return deleteUserTarget.request(MediaType.APPLICATION_JSON)
+                .header("Authorization", token).delete();
     }
 }

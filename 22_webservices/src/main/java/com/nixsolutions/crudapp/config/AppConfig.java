@@ -1,15 +1,13 @@
 package com.nixsolutions.crudapp.config;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import com.nixsolutions.crudapp.controller.ExceptionResource;
-import com.nixsolutions.crudapp.controller.RestController;
-import com.nixsolutions.crudapp.service.UserService;
-import com.nixsolutions.crudapp.service.impl.UserServiceImpl;
+import com.nixsolutions.crudapp.controller.Controller;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
-import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -18,20 +16,17 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ext.RuntimeDelegate;
+import java.util.List;
 import java.util.Properties;
 
 @Configuration
-@ComponentScan(basePackages = { "com.nixsolutions.crudapp.service.impl",
-        "com.nixsolutions.crudapp.dao.impl",
-        "com.nixsolutions.crudapp.security", "com.nixsolutions.crudapp.util", })
+@ComponentScan(basePackages = { "com.nixsolutions.crudapp" })
 @EnableTransactionManagement
 @PropertySource("classpath:db.properties")
 public class AppConfig {
@@ -52,16 +47,14 @@ public class AppConfig {
     }
 
     @Bean
+    @Autowired
     @DependsOn("cxf")
-    public Server jaxRsServer() {
-
+    public Server jaxRsServer(ApplicationContext appContext,
+            List<Controller> controllers) {
         JAXRSServerFactoryBean factory = RuntimeDelegate.getInstance()
                 .createEndpoint(jaxRsApiApplication(),
                         JAXRSServerFactoryBean.class);
-        factory.setResourceClasses(RestController.class);
-
-        factory.setResourceProvider(RestController.class,
-                new SingletonResourceProvider(restController()));
+        factory.setServiceBeans(List.of(controllers.toArray()));
         factory.setAddress("/" + factory.getAddress());
         factory.setProvider(jsonProvider());
         return factory.create();
@@ -75,21 +68,6 @@ public class AppConfig {
     @Bean
     public JacksonJsonProvider jsonProvider() {
         return new JacksonJsonProvider();
-    }
-
-    @Bean
-    public UserService userService() {
-        return new UserServiceImpl();
-    }
-
-    @Bean
-    public RestController restController() {
-        return new RestController();
-    }
-
-    @Bean
-    public ExceptionResource exceptionResource() {
-        return new ExceptionResource();
     }
 
     @Bean
@@ -125,10 +103,5 @@ public class AppConfig {
         HibernateTransactionManager transactionManager = new HibernateTransactionManager();
         transactionManager.setSessionFactory(getSessionFactory().getObject());
         return transactionManager;
-    }
-
-    @Bean
-    public PasswordEncoder getEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

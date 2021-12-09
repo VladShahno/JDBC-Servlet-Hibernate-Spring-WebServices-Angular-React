@@ -1,19 +1,23 @@
 package com.nixsolutions.crudapp.service;
 
-import com.nixsolutions.crudapp.data.UserDto;
+import com.nixsolutions.crudapp.data.JwtTokenDto;
+import com.nixsolutions.crudapp.data.PublicUserDto;
+import com.nixsolutions.crudapp.data.UserDtoForCreate;
 import com.nixsolutions.crudapp.entity.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
+import java.util.Map;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
-    void create(User user);
+    Map<String, String> create(User user);
 
-    void update(UserDto userDto);
+    Map<String, String> update(UserDtoForCreate userDtoForCreate);
 
     void remove(User user);
 
-    List<User> findAll();
+    List<PublicUserDto> findAll();
 
     User findByLogin(String login);
 
@@ -22,5 +26,6 @@ public interface UserService {
     User findById(Long id);
 
     boolean existsByEmail(String email);
-    User convertFromDtoToUser(UserDto dto);
+
+    JwtTokenDto getToken(User user);
 }

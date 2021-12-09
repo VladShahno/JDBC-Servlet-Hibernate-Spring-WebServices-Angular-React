@@ -1,16 +1,11 @@
 package com.nixsolutions.crudapp.controller;
 
-import com.nixsolutions.crudapp.data.UserDto;
-import com.nixsolutions.crudapp.entity.User;
-import com.nixsolutions.crudapp.exception.UserBirthdayException;
-import com.nixsolutions.crudapp.exception.UserPasswordEqualsException;
-import com.nixsolutions.crudapp.exception.UserWithEmailExistsException;
-import com.nixsolutions.crudapp.exception.UserWithLoginExistsException;
-import com.nixsolutions.crudapp.service.AuthenticationService;
-import com.nixsolutions.crudapp.service.UpdateUserService;
+import com.nixsolutions.crudapp.data.PublicUserDto;
+import com.nixsolutions.crudapp.data.UserDtoForCreate;
+import com.nixsolutions.crudapp.mapper.UserMapper;
 import com.nixsolutions.crudapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
@@ -23,43 +18,52 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+@Component
 @Path("/users")
-
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class RestController extends SpringBeanAutowiringSupport {
+public class RestController implements Controller {
 
-    @Autowired
-    private AuthenticationService authenticationService;
     @Autowired
     private UserService userService;
-    @Autowired
-    private UpdateUserService updateUserService;
 
-    @Path("/create")
-    @POST
-    public Response postCreate(@Valid User user)
-            throws UserWithLoginExistsException, UserWithEmailExistsException,
-            UserPasswordEqualsException, UserBirthdayException {
-        authenticationService.register(user);
-        return Response.status(Response.Status.CREATED).build();
+    @Autowired
+    private UserMapper userMapper;
+
+    public RestController() {
     }
 
-    @Path("/update/{login}")
+    @POST
+    public Response postCreate(@Valid UserDtoForCreate userDtoForCreate) {
+        Map<String, String> invalidFields = userService.create(
+                userMapper.userFromUserDtoForCreate(userDtoForCreate));
+        if (invalidFields.isEmpty()) {
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(invalidFields).build();
+        }
+    }
+
+    @Path("/{login}")
     @PUT
     public Response putUpdate(@PathParam(value = "login") String login,
-            @Valid UserDto userDto)
-            throws UserPasswordEqualsException, UserWithEmailExistsException,
-            UserBirthdayException {
-            updateUserService.update(userDto);
-        return Response.status(Response.Status.OK).build();
+            @Valid UserDtoForCreate userDtoForCreate) {
+        Map<String, String> invalidFields = userService.update(
+                userDtoForCreate);
+        if (invalidFields.isEmpty()) {
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST.getStatusCode())
+                    .entity(invalidFields).build();
+        }
     }
 
-    @Path("/delete/{login}")
+    @Path("/{login}")
     @DELETE
     public Response delete(@PathParam(value = "login") String login) {
         userService.remove(userService.findByLogin(login));
@@ -68,39 +72,21 @@ public class RestController extends SpringBeanAutowiringSupport {
 
     @Path("/all")
     @GET
-    public Response getFindAll() {
-        Map<Integer, Map<String, Object>> result = new HashMap<>();
-        List<User> userList = userService.findAll();
-        for (int i = 0; i < userList.size(); i++) {
-            result.put(i, convertToMap(userList.get(i)));
+    public List<PublicUserDto> getAll() {
+        return userService.findAll();
+    }
+
+    @GET
+    @Path("/{username}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getByLogin(@PathParam("username") String login) {
+        Optional<UserDtoForCreate> userDto = Optional.ofNullable(
+                userMapper.userDtoForCreateFromUser(
+                        userService.findByLogin(login)));
+        if (userDto.isPresent()) {
+            return Response.ok(userDto.get()).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.ok(result).status(Response.Status.OK).build();
-    }
-
-    @Path("/findByEmail/{email}")
-    @GET
-    public Response getFindByEmail(@PathParam(value = "email") String email) {
-        return Response.ok(convertToMap(userService.findByEmail(email)))
-                .status(Response.Status.OK).build();
-    }
-
-    @Path("/findByLogin/{login}")
-    @GET
-    public Response getFindByLogin(@PathParam(value = "login") String login) {
-        return Response.ok(convertToMap(userService.findByLogin(login)))
-                .status(Response.Status.OK).build();
-    }
-
-    private Map<String, Object> convertToMap(User user) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("login", user.getLogin());
-        map.put("password", user.getPassword());
-        map.put("passwordConfirm", user.getPasswordConfirm());
-        map.put("email", user.getEmail());
-        map.put("first_name", user.getFirstName());
-        map.put("last_name", user.getLastName());
-        map.put("birthday", user.getBirthday().toString());
-        map.put("role", user.getRole());
-        return map;
     }
 }
