@@ -1,0 +1,16 @@
+<div style="width: 70%; margin: 0 auto;">
+  <form method="post" (ngSubmit)="postLoginData()" style="display: flex; flex-direction: column;
+            width: 40%; margin: 20% auto">
+    <label for="login">Enter your login:</label>
+    <input id="login" type="text" name="login" class="form-control"
+           [(ngModel)]="login">
+    <label for="password">Enter your password:</label>
+    <input type="password" name="password" id="password"
+           class="form-control" [(ngModel)]="password">
+    <div style="display: inline-block; text-align: center">
+      <button type="submit" class="btn btn-success" style="width: 49%;
+                    margin-top: 5px">Sign in
+      </button>
+    </div>
+  </form>
+</div>
