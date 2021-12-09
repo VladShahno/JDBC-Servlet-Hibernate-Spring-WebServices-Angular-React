@@ -1,6 +1,6 @@
 package com.nixsolutions.crudapp.exception;
 
-public class FormProcessingException extends Exception {
+public class FormProcessingException extends RuntimeException {
 
     private final String attributeName;
 
