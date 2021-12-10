@@ -9,22 +9,29 @@ import {Router} from "@angular/router";
 })
 export class LoginFormComponent implements OnInit {
 
-  constructor(private service: UserService, private router: Router) {
+  constructor(public service: UserService, private router: Router) {
   }
 
   login: string = '';
   password: string = '';
+  loginMassage: string = 'Enter your Login and Password';
 
   postLoginData() {
     this.service.loginUser({
       login: this.login,
       password: this.password
-    }).subscribe(tokenResponse => {
-      localStorage.setItem('jwtToken', tokenResponse.token)
-      localStorage.setItem('role', tokenResponse.role);
-      localStorage.setItem('user', tokenResponse.user);
+    }).subscribe(
+      tokenResponse => {
+        localStorage.setItem('jwtToken', tokenResponse.token)
+        localStorage.setItem('role', tokenResponse.role);
+        localStorage.setItem('user', tokenResponse.user);
+        this.redirectUser();
+      });
+    if (localStorage.getItem('user') == null) {
+      this.loginMassage = 'Wrong Login or Password!';
+    } else {
       this.redirectUser();
-    });
+    }
   }
 
   ngOnInit(): void {
