@@ -1,9 +1,9 @@
 <div style="width: 70%; margin: 0 auto;">
   <form method="post" (ngSubmit)="postLoginData()" style="display: flex; flex-direction: column;
             width: 40%; margin: 20% auto">
-    <div *ngIf="!service.loggedIn()"
+    <div *ngIf="loginError"
          class="alert alert-warning">
-      {{ loginMassage }}
+      <p>Wrong Login or Password!</p>
     </div>
     <label for="login">Enter your login:</label>
     <input id="login" type="text" name="login" class="form-control"

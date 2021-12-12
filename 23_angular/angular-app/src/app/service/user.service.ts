@@ -68,8 +68,7 @@ export class UserService {
   }
 
   loginUser(loginRequest: LoginRequest): Observable<TokenResponse> {
-    let observable = this.httpClient.post<TokenResponse>(`${this.baseURL}/login`, loginRequest);
-    return observable;
+    return this.httpClient.post<TokenResponse>(`${this.baseURL}/login`, loginRequest);
   }
 
   logoutUser() {

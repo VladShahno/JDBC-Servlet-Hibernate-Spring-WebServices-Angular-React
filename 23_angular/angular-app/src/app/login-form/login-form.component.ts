@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../service/user.service";
 import {Router} from "@angular/router";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-login-form',
@@ -14,7 +15,7 @@ export class LoginFormComponent implements OnInit {
 
   login: string = '';
   password: string = '';
-  loginMassage: string = 'Enter your Login and Password';
+  loginError: boolean = false;
 
   postLoginData() {
     this.service.loginUser({
@@ -26,19 +27,13 @@ export class LoginFormComponent implements OnInit {
         localStorage.setItem('role', tokenResponse.role);
         localStorage.setItem('user', tokenResponse.user);
         this.redirectUser();
+      }, (err: HttpErrorResponse) => {
+        this.loginError = true;
+        console.log('login error', err);
       });
-    if (localStorage.getItem('user') == null) {
-      this.loginMassage = 'Wrong Login or Password!';
-    } else {
-      this.redirectUser();
-    }
   }
 
   ngOnInit(): void {
-  }
-
-  goToAdminPage() {
-    this.router.navigate(['/users/all']);
   }
 
   redirectUser() {
@@ -46,7 +41,7 @@ export class LoginFormComponent implements OnInit {
     if (userRole == 'USER') {
       this.router.navigate(['/home']);
     } else if (userRole == 'ADMIN') {
-      this.goToAdminPage();
+      this.router.navigate(['/users/all']);
     }
   }
 }
