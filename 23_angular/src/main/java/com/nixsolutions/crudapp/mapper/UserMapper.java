@@ -9,7 +9,6 @@ import com.nixsolutions.crudapp.service.UserService;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
@@ -59,9 +58,9 @@ public class UserMapper {
     public PublicUserDto publicUserDtoFromUser(User user) {
 
         PublicUserDto userDto = new PublicUserDto();
-        userDto.setAge(ChronoUnit.YEARS.between(
-                user.getBirthday().toInstant().atZone(ZoneId.systemDefault())
-                        .toLocalDate(), LocalDate.now()));
+        userDto.setAge(
+                ChronoUnit.YEARS.between(user.getBirthday().toLocalDate(),
+                        LocalDate.now()));
         userDto.setLogin(user.getLogin());
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());

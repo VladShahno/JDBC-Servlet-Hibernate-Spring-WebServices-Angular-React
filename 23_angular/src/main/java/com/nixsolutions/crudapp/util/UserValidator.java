@@ -12,7 +12,7 @@ import com.nixsolutions.crudapp.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import java.sql.Date;
 
 @Component
 public class UserValidator {
@@ -89,7 +89,7 @@ public class UserValidator {
     }
 
     private void validateBirthday(Date date) {
-        if (date == null || date.before(new Date(1900 - 01 - 01)) || date.after(
+        if (date == null || date.before(Date.valueOf("1900-01-01")) || date.after(
                 new Date(new java.util.Date().getTime()))) {
             throw new UserBirthdayException(
                     "Date is incorrect, please enter the right date!");
