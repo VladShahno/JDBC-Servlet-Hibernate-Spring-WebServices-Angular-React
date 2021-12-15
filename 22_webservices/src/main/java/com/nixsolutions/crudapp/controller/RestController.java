@@ -2,6 +2,7 @@ package com.nixsolutions.crudapp.controller;
 
 import com.nixsolutions.crudapp.data.PublicUserDto;
 import com.nixsolutions.crudapp.data.UserDtoForCreate;
+import com.nixsolutions.crudapp.exception.FormProcessingException;
 import com.nixsolutions.crudapp.mapper.UserMapper;
 import com.nixsolutions.crudapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,18 +35,25 @@ public class RestController implements Controller {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    ExceptionController exceptionController;
+
     public RestController() {
     }
 
     @POST
     public Response postCreate(@Valid UserDtoForCreate userDtoForCreate) {
+
         Map<String, String> invalidFields = userService.create(
                 userMapper.userFromUserDtoForCreate(userDtoForCreate));
         if (invalidFields.isEmpty()) {
-            return Response.ok().build();
+            return Response.status(Response.Status.CREATED)
+                    .entity(userDtoForCreate).build();
         } else {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(invalidFields).build();
+            return exceptionController.handleException(
+                    new FormProcessingException(
+                            invalidFields.values().toString(),
+                            invalidFields.keySet().toString()));
         }
     }
 
@@ -53,13 +61,17 @@ public class RestController implements Controller {
     @PUT
     public Response putUpdate(@PathParam(value = "login") String login,
             @Valid UserDtoForCreate userDtoForCreate) {
+
         Map<String, String> invalidFields = userService.update(
                 userDtoForCreate);
         if (invalidFields.isEmpty()) {
-            return Response.ok().build();
+            return Response.status(Response.Status.OK).entity(userDtoForCreate)
+                    .build();
         } else {
-            return Response.status(Response.Status.BAD_REQUEST.getStatusCode())
-                    .entity(invalidFields).build();
+            return exceptionController.handleException(
+                    new FormProcessingException(
+                            invalidFields.values().toString(),
+                            invalidFields.keySet().toString()));
         }
     }
 
