@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {UserService} from "./service/user.service";
-import {UserForCreate} from "./user-models/user-for-create";
+import {UserForCreate} from "./model/user-models/user-for-create";
 
 @Component({
   selector: 'app-root',
@@ -22,11 +22,16 @@ export class AppComponent {
   }
 
   ngOnInit(): void {
+
     if (typeof this.login === "string") {
       this.userService.getUserByLogin(this.login).subscribe(data => {
         this.user = data;
         this.UserName = this.user.firstName;
       }, error => console.log(error));
     }
+  }
+
+  canBeShowed() {
+    return this.userService.loggedIn() && localStorage.getItem('role') == "ADMIN";
   }
 }

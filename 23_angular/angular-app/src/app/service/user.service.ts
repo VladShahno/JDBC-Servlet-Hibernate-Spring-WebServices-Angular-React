@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http'
 import {Observable} from 'rxjs';
-import {User} from '../user-models/user';
-import {UserForCreate} from "../user-models/user-for-create";
+import {User} from '../model/user-models/user';
+import {UserForCreate} from "../model/user-models/user-for-create";
 import {Router} from "@angular/router";
 
 export interface TokenResponse {
@@ -69,6 +69,10 @@ export class UserService {
 
   loginUser(loginRequest: LoginRequest): Observable<TokenResponse> {
     return this.httpClient.post<TokenResponse>(`${this.baseURL}/login`, loginRequest);
+  }
+
+  registerUser(user: UserForCreate): Observable<Object> {
+    return this.httpClient.post(`${this.baseURL}/registration`, user);
   }
 
   logoutUser() {

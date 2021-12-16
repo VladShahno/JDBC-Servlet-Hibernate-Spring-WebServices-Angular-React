@@ -5,25 +5,21 @@ import {
   Router,
   RouterStateSnapshot
 } from '@angular/router';
-import {UserService} from "../service/user.service";
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
-  constructor(
-    private router: Router,
-    private userService: UserService
-  ) {
+export class AdminGuard implements CanActivate {
+  constructor(private router: Router) {
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const currentRole = localStorage.getItem('role');
+    const currentRole = localStorage.getItem('role')?.includes('ADMIN');
     if (currentRole && localStorage.getItem('jwtToken')) {
       return true;
     } else {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/home']);
       return false;
     }
   }

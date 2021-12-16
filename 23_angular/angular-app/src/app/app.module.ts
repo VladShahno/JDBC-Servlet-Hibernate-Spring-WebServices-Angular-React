@@ -3,14 +3,16 @@ import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {UserListComponent} from './user-list/user-list.component';
+import {UserListComponent} from './component/user-list/user-list.component';
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {UserService} from "./service/user.service";
-import {CreateUserComponent} from './create-user/create-user.component';
-import {UpdateUserComponent} from './update-user/update-user.component';
-import {LoginFormComponent} from './login-form/login-form.component';
-import {UserHomeComponent} from './user-home/user-home.component';
+import {CreateUserComponent} from './component/create-user/create-user.component';
+import {UpdateUserComponent} from './component/update-user/update-user.component';
+import {LoginFormComponent} from './component/login-form/login-form.component';
+import {UserHomeComponent} from './component/user-home/user-home.component';
+import {UserRegistrationComponent} from './component/user-registration/user-registration.component';
+import {RecaptchaFormsModule, RecaptchaModule} from 'ng-recaptcha';
 
 @NgModule({
   declarations: [
@@ -19,17 +21,23 @@ import {UserHomeComponent} from './user-home/user-home.component';
     CreateUserComponent,
     UpdateUserComponent,
     LoginFormComponent,
-    UserHomeComponent
+    UserHomeComponent,
+    UserRegistrationComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    RecaptchaModule,
+    RecaptchaFormsModule
   ],
   providers: [UserService],
   bootstrap: [AppComponent]
 })
+
 export class AppModule {
+
+
 }

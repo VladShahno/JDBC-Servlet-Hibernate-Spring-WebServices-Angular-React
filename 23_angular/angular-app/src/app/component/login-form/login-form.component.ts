@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from "../service/user.service";
+import {UserService} from "../../service/user.service";
 import {Router} from "@angular/router";
 import {HttpErrorResponse} from "@angular/common/http";
 
@@ -29,7 +29,6 @@ export class LoginFormComponent implements OnInit {
         this.redirectUser();
       }, (err: HttpErrorResponse) => {
         this.loginError = true;
-        console.log('login error', err);
       });
   }
 

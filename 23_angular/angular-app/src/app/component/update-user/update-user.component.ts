@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {UserForCreate} from "../user-models/user-for-create";
-import {UserService} from "../service/user.service";
+import {UserForCreate} from "../../model/user-models/user-for-create";
+import {UserService} from "../../service/user.service";
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
@@ -40,6 +40,7 @@ export class UpdateUserComponent implements OnInit {
         for (const [key, value] of Object.entries(error.error)) {
           this.problems.set(key, <string>value);
         }
+        console.log(this.problems)
         console.log(error.error);
       }
     })

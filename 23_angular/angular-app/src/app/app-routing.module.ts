@@ -1,12 +1,13 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {UserListComponent} from "./user-list/user-list.component";
-import {CreateUserComponent} from "./create-user/create-user.component";
-import {UpdateUserComponent} from "./update-user/update-user.component";
-import {LoginFormComponent} from "./login-form/login-form.component";
-import {AuthGuard} from "./page-guard/auth-guard";
-import {AdminGuard} from "./page-guard/admin-guard";
-import {UserHomeComponent} from "./user-home/user-home.component";
+import {UserListComponent} from "./component/user-list/user-list.component";
+import {CreateUserComponent} from "./component/create-user/create-user.component";
+import {UpdateUserComponent} from "./component/update-user/update-user.component";
+import {LoginFormComponent} from "./component/login-form/login-form.component";
+import {AuthGuard} from "./component/page-guard/auth-guard";
+import {AdminGuard} from "./component/page-guard/admin-guard";
+import {UserHomeComponent} from "./component/user-home/user-home.component";
+import {UserRegistrationComponent} from "./component/user-registration/user-registration.component";
 
 const routes: Routes = [
   {
@@ -26,7 +27,8 @@ const routes: Routes = [
     canActivate: [AuthGuard, AdminGuard]
   },
   {path: 'login', component: LoginFormComponent},
-  {path: 'home', component: UserHomeComponent, canActivate: [AuthGuard]}
+  {path: 'home', component: UserHomeComponent, canActivate: [AuthGuard]},
+  {path: 'registration', component: UserRegistrationComponent}
 ];
 
 @NgModule({

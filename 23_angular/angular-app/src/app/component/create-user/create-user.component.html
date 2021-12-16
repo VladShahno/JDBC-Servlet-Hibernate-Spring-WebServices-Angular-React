@@ -1,11 +1,19 @@
 <div class="col-md-6 offset-md-3">
-  <h1 class="text-center"> Update user: {{user.login}}</h1>
+  <h1 class="text-center"> Create User </h1>
   <form ngNativeValidate (ngSubmit)="onSubmit()" action="#">
 
     <div class="form-group">
       <label> Login </label>
-      <input type="text" class="form-control" id="login"
-             [(ngModel)]="user.login" name="login" readonly>
+      <input type="text" class="form-control" id="login" name="login"
+             [(ngModel)]="user.login" name="login" required #login="ngModel">
+    </div>
+
+    <div *ngIf="problems.has('[loginError]')" class="alert alert-warning">
+      {{ problems.get('[loginError]') }}
+    </div>
+    <div *ngIf="problems.has('[constraintLoginError]')"
+         class="alert alert-warning">
+      {{ problems.get('[constraintLoginError]') }}
     </div>
 
     <div class="form-group">
@@ -14,8 +22,8 @@
              [(ngModel)]="user.firstName" name="firstName" required>
     </div>
 
-    <div *ngIf="problems.has('nameError')" class="alert alert-warning">
-      {{ problems.get('nameError') }}
+    <div *ngIf="problems.has('[nameError]')" class="alert alert-warning">
+      {{ problems.get('[nameError]') }}
     </div>
 
     <div class="form-group">
@@ -27,17 +35,17 @@
     <div class="form-group">
       <label> Password</label>
       <input type="password" class="form-control" id="password"
-             [(ngModel)]="user.password" name="password">
+             [(ngModel)]="user.password" name="password" required>
     </div>
 
     <div class="form-group">
       <label> Confirm Password </label>
       <input type="password" class="form-control" id="passwordConfirm"
-             [(ngModel)]="user.passwordConfirm" name="passwordConfirm">
+             [(ngModel)]="user.passwordConfirm" name="passwordConfirm" required>
     </div>
 
-    <div *ngIf="problems.has('passwordError')" class="alert alert-warning">
-      {{ problems.get('passwordError') }}
+    <div *ngIf="problems.has('[passwordError]')" class="alert alert-warning">
+      {{ problems.get('[passwordError]') }}
     </div>
 
     <div class="form-group">
@@ -46,8 +54,8 @@
              [(ngModel)]="user.email" name="email" required>
     </div>
 
-    <div *ngIf="problems.has('emailError')" class="alert alert-warning">
-      {{ problems.get('emailError') }}
+    <div *ngIf="problems.has('[emailError]')" class="alert alert-warning">
+      {{ problems.get('[emailError]') }}
     </div>
 
     <div class="form-group">
@@ -56,8 +64,8 @@
              [(ngModel)]="user.birthday" name="birthday" required>
     </div>
 
-    <div *ngIf="problems.has('dateError')" class="alert alert-warning">
-      {{ problems.get('dateError') }}
+    <div *ngIf="problems.has('[dateError]')" class="alert alert-warning">
+      {{ problems.get('[dateError]') }}
     </div>
 
     <label> Role</label>
@@ -68,7 +76,7 @@
 
     <div>
       <button type="submit" class="btn btn-success"
-              style="margin: 0 auto; margin-top: 10px; width: 49.8%"> Update
+              style="margin: 0 auto; margin-top: 10px; width: 49.8%"> Create
       </button>
       <a href="/users/all" class="btn btn-outline-danger" style="width: 49%;
                     margin-top: 10px; margin-left: 5px">Cancel</a>

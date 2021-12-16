@@ -7,7 +7,7 @@
            class="nav-link">Home</a>
       </li>
       <li class="nav-item">
-        <a *ngIf="userService.loggedIn()" routerLink="users/new"
+        <a *ngIf="canBeShowed()" routerLink="users/new"
            routerLinkActive="active" class="nav-link">Add
           User</a>
       </li>

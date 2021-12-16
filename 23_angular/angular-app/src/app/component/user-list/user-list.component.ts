@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from "../service/user.service";
-import {User} from "../user-models/user";
+import {UserService} from "../../service/user.service";
+import {User} from "../../model/user-models/user";
 import {Router} from "@angular/router";
 
 @Component({
@@ -31,7 +31,6 @@ export class UserListComponent implements OnInit {
 
   deleteEmployee(login: string) {
     this.userService.deleteUser(login).subscribe(data => {
-      console.log(data);
       this.getUsers();
     })
   }
