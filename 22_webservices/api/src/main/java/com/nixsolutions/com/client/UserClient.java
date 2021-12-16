@@ -36,22 +36,24 @@ public class UserClient {
                 .header("Authorization", getToken()).delete();
     }
 
-    public Response putUser(UserDtoForCreate userDtoForCreate) {
+    public UserDtoForCreate putUser(UserDtoForCreate userDtoForCreate) {
 
         WebTarget putUserTarget = apiTarget.path(
                 "users/" + userDtoForCreate.getLogin());
         return putUserTarget.request(MediaType.APPLICATION_JSON)
                 .header("Authorization", getToken())
                 .put(Entity.entity(userDtoForCreate,
-                        MediaType.APPLICATION_JSON));
+                        MediaType.APPLICATION_JSON))
+                .readEntity(userDtoForCreate.getClass());
     }
 
-    public Response postUser(UserDtoForCreate userDto) {
+    public UserDtoForCreate postUser(UserDtoForCreate userDto) {
 
         WebTarget postUser = apiTarget.path("users");
         return postUser.request(MediaType.APPLICATION_JSON)
                 .header("Authorization", getToken())
-                .post(Entity.entity(userDto, MediaType.APPLICATION_JSON));
+                .post(Entity.entity(userDto, MediaType.APPLICATION_JSON))
+                .readEntity(userDto.getClass());
     }
 
     public PublicUserDto[] getAll() {

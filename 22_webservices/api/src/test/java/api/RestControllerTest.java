@@ -14,8 +14,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import java.sql.Date;
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RestControllerTest {
 
@@ -51,32 +49,41 @@ public class RestControllerTest {
                 "John@email.com", "John", "Konstantin",
                 Date.valueOf("2000-03-10"), "ADMIN");
 
-        Response response = userClient.postUser(userDto);
+        UserDtoForCreate newUser = userClient.postUser(userDto);
 
-        assertEquals(HttpStatus.CREATED_201, response.getStatus());
+        Assertions.assertNotNull(newUser);
+        Assertions.assertEquals(userDto.getEmail(),
+                userClient.getByLogin("JoKo").getEmail());
     }
 
     @Test
     @Order(2)
     public void shouldUpdateUserTest() {
 
-        UserDtoForCreate userDto = new UserDtoForCreate("JoKo", "jo", "jo",
-                "newemail@email.com", "NewName", "NewLastName",
-                Date.valueOf("2000-03-10"), "ADMIN");
+        UserDtoForCreate userDtoForUpdate = new UserDtoForCreate("JoKo", "jo",
+                "jo", "newemail@email.com", "NewName", "NewLastName",
+                Date.valueOf("2000-03-10"), "USER");
 
-        Response response = userClient.putUser(userDto);
+        UserDtoForCreate updatedUser = userClient.putUser(userDtoForUpdate);
 
-        assertEquals(HttpStatus.OK_200, response.getStatus());
-
+        Assertions.assertNotNull(updatedUser);
+        Assertions.assertEquals(updatedUser.getEmail(),
+                userClient.getByLogin("JoKo").getEmail());
+        Assertions.assertEquals(updatedUser.getRole(),
+                userClient.getByLogin("JoKo").getRole());
     }
 
     @Test
     @Order(5)
     public void shouldDeleteUserByLogin() {
 
-        Response response = userClient.deleteUser("JoKo");
+        int lengthBeforeDelete = userClient.getAll().length;
 
-        Assertions.assertEquals(HttpStatus.OK_200,
-                response.getStatus());
+        Response response = userClient.deleteUser("JoKo");
+        Assertions.assertEquals(HttpStatus.OK_200, response.getStatus());
+
+        int lengthAfterDelete = userClient.getAll().length;
+
+        Assertions.assertNotEquals(lengthBeforeDelete, lengthAfterDelete);
     }
 }
