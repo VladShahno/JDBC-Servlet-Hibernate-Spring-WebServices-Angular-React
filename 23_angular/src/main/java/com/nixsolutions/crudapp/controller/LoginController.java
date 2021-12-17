@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -29,7 +28,7 @@ public class LoginController implements Controller {
     private final UserService userService;
 
     @POST
-    public Response login(LoginDto loginDto, ServletResponse servletResponse) {
+    public Response login(LoginDto loginDto) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getLogin(),
                         loginDto.getPassword()));

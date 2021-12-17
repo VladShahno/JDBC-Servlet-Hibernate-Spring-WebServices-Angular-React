@@ -1,8 +1,7 @@
 package com.nixsolutions.crudapp.controller;
 
-import com.nixsolutions.crudapp.data.UserDtoForCreate;
+import com.nixsolutions.crudapp.data.UserDtoRegisterRequest;
 import com.nixsolutions.crudapp.exception.FormProcessingException;
-import com.nixsolutions.crudapp.mapper.UserMapper;
 import com.nixsolutions.crudapp.service.RoleService;
 import com.nixsolutions.crudapp.service.UserService;
 import lombok.AllArgsConstructor;
@@ -32,20 +31,19 @@ public class RegistrationController implements Controller {
     private RoleService roleService;
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
     private ExceptionController exceptionController;
 
     @POST
-    public Response postRegister(@Valid UserDtoForCreate userDtoForCreate) {
+    public Response postRegister(
+            @Valid UserDtoRegisterRequest userDtoRegisterRequest) {
 
-        userDtoForCreate.setRole(roleService.findByName("USER").getName());
-        Map<String, String> invalidFields = userService.create(
-                userMapper.userFromUserDtoForCreate(userDtoForCreate));
+        userDtoRegisterRequest.setRole(
+                roleService.findByName("USER").getName());
+        Map<String, String> invalidFields = userService.register(
+                userDtoRegisterRequest);
         if (invalidFields.isEmpty()) {
             return Response.status(Response.Status.CREATED)
-                    .entity(userDtoForCreate).build();
+                    .entity(userDtoRegisterRequest).build();
         } else {
             return exceptionController.handleException(
                     new FormProcessingException(
