@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {User} from '../model/user-models/user';
 import {UserForCreate} from "../model/user-models/user-for-create";
 import {Router} from "@angular/router";
+import {UserRegisterRequest} from "../model/user-models/user-register-request";
 
 export interface TokenResponse {
   user: string;
@@ -71,8 +72,8 @@ export class UserService {
     return this.httpClient.post<TokenResponse>(`${this.baseURL}/login`, loginRequest);
   }
 
-  registerUser(user: UserForCreate): Observable<Object> {
-    return this.httpClient.post(`${this.baseURL}/registration`, user);
+  registerUser(user: UserRegisterRequest): Observable<Object> {
+    return this.httpClient.post<any>(`${this.baseURL}/registration`, user);
   }
 
   logoutUser() {
