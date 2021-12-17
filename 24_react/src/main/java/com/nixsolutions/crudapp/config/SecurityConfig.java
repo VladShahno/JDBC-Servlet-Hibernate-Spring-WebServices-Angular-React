@@ -58,9 +58,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     corsConfiguration.setAllowedMethods(
                             List.of("GET", "POST", "PUT", "DELETE"));
                     return corsConfiguration;
-                }).and().csrf().disable().authorizeRequests().antMatchers("/api/login")
-                .permitAll().antMatchers("users/**").hasRole("ADMIN")
-                .anyRequest().authenticated();
+                }).and().csrf().disable().authorizeRequests().antMatchers("/api/login").permitAll()
+                .antMatchers("/api/registration").permitAll()
+                .antMatchers("users/**").hasRole("ADMIN").anyRequest()
+                .authenticated();
         http.addFilterBefore(new JwtTokenFilter(tokenProvider),
                 UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement()

@@ -4,10 +4,12 @@ import com.nixsolutions.crudapp.dao.UserDao;
 import com.nixsolutions.crudapp.data.JwtTokenDto;
 import com.nixsolutions.crudapp.data.PublicUserDto;
 import com.nixsolutions.crudapp.data.UserDtoForCreate;
+import com.nixsolutions.crudapp.data.UserDtoRegisterRequest;
 import com.nixsolutions.crudapp.entity.User;
 import com.nixsolutions.crudapp.exception.FormProcessingException;
 import com.nixsolutions.crudapp.jwt.JwtTokenProvider;
 import com.nixsolutions.crudapp.mapper.UserMapper;
+import com.nixsolutions.crudapp.service.CaptchaService;
 import com.nixsolutions.crudapp.service.UserService;
 import com.nixsolutions.crudapp.util.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,8 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Autowired
     private JwtTokenProvider tokenProvider;
+    @Autowired
+    private CaptchaService captchaService;
 
     @Override
     public Map<String, String> create(User user) {
@@ -105,5 +109,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         return userDao.findByLogin(username);
+    }
+
+    @Override
+    public Map<String, String> register(
+            UserDtoRegisterRequest userDtoRegisterRequest) {
+
+        Map<String, String> invalidFields = new HashMap<>();
+
+        try {
+            validationService.validateCaptcha(userDtoRegisterRequest);
+            validationService.validateCreate(
+                    userMapper.userFromUserDtoRegisterRequest(
+                            userDtoRegisterRequest));
+        } catch (FormProcessingException e) {
+            invalidFields.put(e.getAttributeName(), e.getMessage());
+            return invalidFields;
+        }
+        userDtoRegisterRequest.setPassword(passwordEncoder.encode(userDtoRegisterRequest.getPassword()));
+        userDao.create(userMapper.userFromUserDtoRegisterRequest(userDtoRegisterRequest));
+        return invalidFields;
     }
 }

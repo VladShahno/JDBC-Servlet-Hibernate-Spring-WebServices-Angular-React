@@ -2,6 +2,7 @@ package com.nixsolutions.crudapp.mapper;
 
 import com.nixsolutions.crudapp.data.PublicUserDto;
 import com.nixsolutions.crudapp.data.UserDtoForCreate;
+import com.nixsolutions.crudapp.data.UserDtoRegisterRequest;
 import com.nixsolutions.crudapp.entity.Role;
 import com.nixsolutions.crudapp.entity.User;
 import com.nixsolutions.crudapp.service.RoleService;
@@ -91,5 +92,16 @@ public class UserMapper {
                 userDtoForCreate.getEmail(), userDtoForCreate.getFirstName(),
                 userDtoForCreate.getLastName(), userDtoForCreate.getBirthday(),
                 roleService.findByName(userDtoForCreate.getRole()));
+    }
+
+    public User userFromUserDtoRegisterRequest(UserDtoRegisterRequest userDtoRegisterRequest) {
+
+        return new User(userDtoRegisterRequest.getLogin(),
+                userDtoRegisterRequest.getPassword(),
+                userDtoRegisterRequest.getPasswordConfirm(),
+                userDtoRegisterRequest.getEmail(), userDtoRegisterRequest.getFirstName(),
+                userDtoRegisterRequest.getLastName(), userDtoRegisterRequest.getBirthday(),
+                roleService.findByName(userDtoRegisterRequest.getRole()));
+
     }
 }

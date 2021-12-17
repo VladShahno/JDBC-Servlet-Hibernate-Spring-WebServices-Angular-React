@@ -3,6 +3,7 @@ package com.nixsolutions.crudapp.service;
 import com.nixsolutions.crudapp.data.JwtTokenDto;
 import com.nixsolutions.crudapp.data.PublicUserDto;
 import com.nixsolutions.crudapp.data.UserDtoForCreate;
+import com.nixsolutions.crudapp.data.UserDtoRegisterRequest;
 import com.nixsolutions.crudapp.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -28,4 +29,6 @@ public interface UserService extends UserDetailsService {
     boolean existsByEmail(String email);
 
     JwtTokenDto getToken(User user);
+
+    Map<String, String> register(UserDtoRegisterRequest registerRequest);
 }

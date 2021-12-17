@@ -1,13 +1,16 @@
 package com.nixsolutions.crudapp.util;
 
 import com.nixsolutions.crudapp.data.UserDtoForCreate;
+import com.nixsolutions.crudapp.data.UserDtoRegisterRequest;
 import com.nixsolutions.crudapp.entity.User;
+import com.nixsolutions.crudapp.exception.CaptchaException;
 import com.nixsolutions.crudapp.exception.UserBirthdayException;
 import com.nixsolutions.crudapp.exception.UserLoginConstraintException;
 import com.nixsolutions.crudapp.exception.UserNameConstraintException;
 import com.nixsolutions.crudapp.exception.UserPasswordEqualsException;
 import com.nixsolutions.crudapp.exception.UserWithEmailExistsException;
 import com.nixsolutions.crudapp.exception.UserWithLoginExistsException;
+import com.nixsolutions.crudapp.service.CaptchaService;
 import com.nixsolutions.crudapp.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -18,12 +21,16 @@ import java.sql.Date;
 public class UserValidator {
 
     private final UserService userService;
+
     private final PasswordEncoder passwordEncoder;
 
+    private final CaptchaService captchaService;
+
     public UserValidator(UserService userService,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder, CaptchaService captchaService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.captchaService = captchaService;
     }
 
     public void validateUpdate(UserDtoForCreate userDtoForCreate) {
@@ -89,8 +96,8 @@ public class UserValidator {
     }
 
     private void validateBirthday(Date date) {
-        if (date == null || date.before(Date.valueOf("1900-01-01")) || date.after(
-                new Date(new java.util.Date().getTime()))) {
+        if (date == null || date.before(Date.valueOf("1900-01-01"))
+                || date.after(new Date(new java.util.Date().getTime()))) {
             throw new UserBirthdayException(
                     "Date is incorrect, please enter the right date!");
         }
@@ -107,6 +114,14 @@ public class UserValidator {
         if (login.isBlank() || login.length() > 10 || login.length() < 2) {
             throw new UserLoginConstraintException(
                     "Login length must be between [2-40] letters!");
+        }
+    }
+
+    public void validateCaptcha(UserDtoRegisterRequest userDtoRegisterRequest) {
+        boolean captchaVerified = captchaService.verify(
+                userDtoRegisterRequest.getRecaptchaResponse());
+        if (!captchaVerified) {
+            throw new CaptchaException("Wrong Captcha!");
         }
     }
 }
