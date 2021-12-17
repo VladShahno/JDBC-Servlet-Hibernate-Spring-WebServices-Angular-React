@@ -5,7 +5,7 @@ import CreateUserComponent from "./components/CreateUserComponent";
 import React from "react";
 import NavBar from "./components/NavBar";
 import UpdateUserComponent from "./components/UpdateUserComponent";
-import LoginComponent from "./components/LoginComponent";
+import LoginComponent from "./components/Login";
 
 function App() {
 

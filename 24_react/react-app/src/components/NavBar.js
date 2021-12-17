@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import UserService from "../services/UserService";
 
 const NavBar = () => {
     return (
@@ -14,7 +15,9 @@ const NavBar = () => {
                         <Link to="/new" className="nav-link">Add User</Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/logout" className="nav-link">Logout</Link>
+                        <Link to="/login" onClick={() => {
+                            UserService.logout();
+                        }} className="nav-link">Logout</Link>
                     </li>
                 </ul>
             </nav>

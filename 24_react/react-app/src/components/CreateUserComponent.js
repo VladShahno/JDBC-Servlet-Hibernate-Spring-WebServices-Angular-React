@@ -32,7 +32,7 @@ const AddEmployeeComponent = () => {
         console.log(user);
 
         UserService.createUser(user).then((response) => {
-            if (response.status === 200) {
+            if (response.status === 201) {
                 history.push('/all')
             } else {
                 console.log(response.data)
@@ -40,6 +40,7 @@ const AddEmployeeComponent = () => {
             }
         }).catch(error => {
             console.log(error.response.data)
+            debugger
             setProblems(error.response.data)
         })
     }
