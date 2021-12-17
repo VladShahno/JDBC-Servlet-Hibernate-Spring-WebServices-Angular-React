@@ -9,16 +9,21 @@ services:
     volumes:
       - ./DDL_Docker.sql:/docker-entrypoint-initdb.d/DDL_Docker.sql
     restart: always
-
-  app:
+  backend:
     build: .
     depends_on:
       - db
     ports:
       - 8080:8080
-  api:
+  front:
     build: angular-app
     depends_on:
-      - app
+      - backend
     ports:
       - 4200:4200
+  api:
+    build: api
+    depends_on:
+      - backend
+    ports:
+      - 9000:8085

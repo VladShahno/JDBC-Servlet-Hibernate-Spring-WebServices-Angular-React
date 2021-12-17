@@ -19,7 +19,8 @@ import java.net.URL;
 @PropertySource("classpath:db.properties")
 public class CaptchaServiceImpl implements CaptchaService {
 
-    private final String secretKey = "6LcuZasdAAAAADqLrmmmtkFdIA8ZHXK9UwvB5UZz";
+    @Value("${secret_key}")
+    private String secretKey;
 
     @Override
     public boolean verify(String captcha) {
