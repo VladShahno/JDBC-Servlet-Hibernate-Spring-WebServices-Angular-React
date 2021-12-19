@@ -8,12 +8,12 @@
              [(ngModel)]="user.login" name="login" required #login="ngModel">
     </div>
 
-    <div *ngIf="problems.has('[loginError]')" class="alert alert-warning">
-      {{ problems.get('[loginError]') }}
+    <div *ngIf="problems.has('loginError')" class="alert alert-warning">
+      {{ problems.get('loginError') }}
     </div>
-    <div *ngIf="problems.has('[constraintLoginError]')"
+    <div *ngIf="problems.has('constraintLoginError')"
          class="alert alert-warning">
-      {{ problems.get('[constraintLoginError]') }}
+      {{ problems.get('constraintLoginError') }}
     </div>
 
     <div class="form-group">
@@ -22,8 +22,8 @@
              [(ngModel)]="user.firstName" name="firstName" required>
     </div>
 
-    <div *ngIf="problems.has('[nameError]')" class="alert alert-warning">
-      {{ problems.get('[nameError]') }}
+    <div *ngIf="problems.has('nameError')" class="alert alert-warning">
+      {{ problems.get('nameError') }}
     </div>
 
     <div class="form-group">
@@ -44,8 +44,8 @@
              [(ngModel)]="user.passwordConfirm" name="passwordConfirm" required>
     </div>
 
-    <div *ngIf="problems.has('[passwordError]')" class="alert alert-warning">
-      {{ problems.get('[passwordError]') }}
+    <div *ngIf="problems.has('passwordError')" class="alert alert-warning">
+      {{ problems.get('passwordError') }}
     </div>
 
     <div class="form-group">
@@ -54,8 +54,8 @@
              [(ngModel)]="user.email" name="email" required>
     </div>
 
-    <div *ngIf="problems.has('[emailError]')" class="alert alert-warning">
-      {{ problems.get('[emailError]') }}
+    <div *ngIf="problems.has('emailError')" class="alert alert-warning">
+      {{ problems.get('emailError') }}
     </div>
 
     <div class="form-group">
@@ -64,15 +64,15 @@
              [(ngModel)]="user.birthday" name="birthday" required>
     </div>
 
-    <div *ngIf="problems.has('[dateError]')" class="alert alert-warning">
-      {{ problems.get('[dateError]') }}
+    <div *ngIf="problems.has('dateError')" class="alert alert-warning">
+      {{ problems.get('dateError') }}
     </div>
 
     <div class="form-group">
       <div class="g-recaptcha" data-sitekey="6LcuZasdAAAAANSxWR8DFuj0IT3dkgb0eEkehZed"></div>
     </div>
-    <div *ngIf="problems.has('[captchaError]')" class="alert alert-warning">
-      {{ problems.get('[captchaError]') }}
+    <div *ngIf="problems.has('captchaError')" class="alert alert-warning">
+      {{ problems.get('captchaError') }}
     </div>
     <div>
       <button type="submit" class="btn btn-success"
