@@ -1,14 +1,17 @@
 import React, {useState} from "react";
-import UserService from "../services/UserService";
+import UserService from "../../service/UserService";
 import {useHistory} from 'react-router-dom';
+import './LoginComponent.css';
 
-const Login = () => {
+const LoginComponent = () => {
 
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
+    const [loginError, setLoinError] = useState(false);
     const history = useHistory();
 
     const onLogin = async (e) => {
+
         e.preventDefault();
         const user = {
             login,
@@ -16,24 +19,29 @@ const Login = () => {
         }
 
         await UserService.loginUser(user).then((response) => {
+
             localStorage.setItem('token', response.data.token)
             localStorage.setItem('user', response.data.user)
             localStorage.setItem('role', response.data.role)
+
             if (localStorage.getItem('role') === 'USER') {
                 history.push('/home');
             } else {
-                history.push('all')
+                history.push('/all')
             }
-        }).catch(
-            (err) => {
-                console.log(localStorage.getItem('role'))
-            }
-        )
+        }).catch(error => {
+            setLoinError(true);
+            console.log(error.response.data)
+        })
+
     }
 
     return (
         <div className="login_block">
             <form onSubmit={onLogin} className="login_form">
+                {loginError &&
+                    <div className={"alert alert-danger error-window"}>
+                        Wrong Login or Password!</div>}
                 <label>Enter your login:</label>
                 <input id="login" type="text" name="login"
                        className="form-control"
@@ -54,4 +62,4 @@ const Login = () => {
         </div>
     )
 }
-export default Login;
+export default LoginComponent;

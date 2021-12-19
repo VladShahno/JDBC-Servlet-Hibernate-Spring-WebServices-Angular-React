@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import {Link, useHistory, useParams} from 'react-router-dom';
-import UserService from "../services/UserService";
+import UserService from "../../service/UserService";
 import {useForm} from "react-hook-form";
+import NavBarComponent from "../navbar-user/NavBarComponent";
 
-const AddEmployeeComponent = () => {
+const UpdateUserComponent = () => {
 
     const [login, setLogin] = useState('');
     const [firstName, setFirstName] = useState('')
@@ -37,11 +38,9 @@ const AddEmployeeComponent = () => {
             if (response.status === 200) {
                 history.push('/all')
             } else {
-                console.log(response.data)
                 setProblems(response.data)
             }
         }).catch(error => {
-            console.log(error.response.data)
             setProblems(error.response.data)
         })
     }
@@ -56,13 +55,12 @@ const AddEmployeeComponent = () => {
             setPasswordConfirm(response.data.passwordConfirm)
             setBirthday(response.data.birthday)
             setRole(response.data.role)
-        }).catch(error => {
-            console.log(error)
         })
     }, []);
 
     return (
         <div>
+            {NavBarComponent()}
             <div className="container">
                 <div className="row">
                     <div className="col-md-6 offset-md-3">
@@ -215,4 +213,4 @@ const AddEmployeeComponent = () => {
         </div>)
 }
 
-export default AddEmployeeComponent
+export default UpdateUserComponent

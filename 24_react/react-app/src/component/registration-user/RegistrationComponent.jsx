@@ -1,9 +1,11 @@
 import React, {useState} from 'react'
 import {Link, useHistory} from 'react-router-dom';
-import UserService from "../services/UserService";
+import UserService from "../../service/UserService";
 import {useForm} from "react-hook-form";
+import ReCAPTCHA from "react-google-recaptcha/lib/esm/recaptcha-wrapper";
 
-const AddEmployeeComponent = () => {
+
+const RegistrationComponent = () => {
 
     const [login, setLogin] = useState('');
     const [firstName, setFirstName] = useState('')
@@ -12,7 +14,8 @@ const AddEmployeeComponent = () => {
     const [password, setPassword] = useState('')
     const [passwordConfirm, setPasswordConfirm] = useState('')
     const [birthday, setBirthday] = useState('')
-    const [role, setRole] = useState('')
+    const [recaptchaResponse, setRecaptchaResponse]=  useState('')
+
     const history = useHistory();
     const {formState: {errors}, handleSubmit} = useForm();
     const [problems, setProblems] = useState(new Map());
@@ -27,21 +30,19 @@ const AddEmployeeComponent = () => {
             password,
             passwordConfirm,
             birthday,
-            role
+            recaptchaResponse
         }
-        console.log(user);
 
-        UserService.createUser(user).then((response) => {
+        UserService.registerUser(user).then((response) => {
+
             if (response.status === 201) {
-                history.push('/all')
+                history.push('/login')
             } else {
-                console.log(response.data)
                 setProblems(response.data)
             }
         }).catch(error => {
-            console.log(error.response.data)
-            debugger
             setProblems(error.response.data)
+            window.grecaptcha.reset();
         })
     }
 
@@ -50,7 +51,7 @@ const AddEmployeeComponent = () => {
             <div className="container">
                 <div className="row">
                     <div className="col-md-6 offset-md-3">
-                        <h2 className={"text-center"}>Create User</h2>
+                        <h2 className={"text-center"}>Registration</h2>
                         <div className="card-body">
                             <form onSubmit={handleSubmit(saveUser)}>
                                 <div className="form-group mb-2">
@@ -183,24 +184,23 @@ const AddEmployeeComponent = () => {
                                     }
                                 </div>
 
-                                <div className="form-group mb-2">
-                                    <label className="form-label">
-                                        Role :</label>
-                                    <select value={role}
-                                            onChange={(e) => setRole(e.target.value)}
-                                            className="form-control"
-                                            required={true}>
-                                        <option value=""/>
-                                        <option value="USER">USER</option>
-                                        <option value="ADMIN">ADMIN</option>
-                                    </select>
+                                <div className="captcha">
+                                    <ReCAPTCHA
+                                        sitekey="6LcuZasdAAAAANSxWR8DFuj0IT3dkgb0eEkehZed"
+                                        onChange={setRecaptchaResponse}
+                                    >
+                                    </ReCAPTCHA>
                                 </div>
-
+                                {
+                                    problems.captchaError &&
+                                    <div
+                                        className="alert alert-warning">{problems.captchaError}</div>
+                                }
                                 <div>
                                     <button type={"submit"}
-                                            className="btn btn-success"> Create
+                                            className="btn btn-success"> Register
                                     </button>
-                                    <Link to="/all"
+                                    <Link to="/login"
                                           className="btn btn-outline-danger">Cancel</Link>
                                 </div>
 
@@ -211,5 +211,4 @@ const AddEmployeeComponent = () => {
             </div>
         </div>)
 }
-
-export default AddEmployeeComponent
+export default RegistrationComponent

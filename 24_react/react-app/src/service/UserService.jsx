@@ -1,15 +1,11 @@
 import axios from 'axios'
-import authHeader from "./AuthHeader";
 
-const BASE_URL = 'http://localhost:8080/api/users';
-
-const LOGIN_URL = 'http://localhost:8080/api';
-
+const BASE_URL = 'http://localhost:8080/api/';
 
 class UserService {
 
     getAllUsers() {
-        return axios.get(BASE_URL + '/all', {
+        return axios.get(BASE_URL + 'users/all', {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -18,7 +14,7 @@ class UserService {
     }
 
     createUser(user) {
-        return axios.post(BASE_URL, user, {
+        return axios.post(BASE_URL + 'users', user, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -27,7 +23,7 @@ class UserService {
     }
 
     getUserByLogin(login) {
-        return axios.get(BASE_URL + '/' + login, {
+        return axios.get(BASE_URL + 'users/' + login, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -36,7 +32,7 @@ class UserService {
     }
 
     updateUser(login, user) {
-        return axios.put((BASE_URL + '/' + login), user, {
+        return axios.put((BASE_URL + 'users/' + login), user, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -45,7 +41,7 @@ class UserService {
     }
 
     deleteUser(login) {
-        return axios.delete(BASE_URL + '/' + login, {
+        return axios.delete(BASE_URL + 'users/' + login, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -54,7 +50,7 @@ class UserService {
     }
 
     loginUser(user) {
-        return axios.post(LOGIN_URL + '/login',{'login':user.login,'password': user.password}, {
+        return axios.post(BASE_URL + 'login', {'login': user.login, 'password': user.password}, {
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -63,6 +59,14 @@ class UserService {
 
     logout() {
         localStorage.clear();
+    }
+
+    registerUser(user) {
+        return axios.post(BASE_URL + 'registration', user, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
     }
 }
 

@@ -1,26 +1,49 @@
 import './App.css';
-import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
-import UserListComponent from "./components/UserLisComponent";
-import CreateUserComponent from "./components/CreateUserComponent";
-import React from "react";
-import NavBar from "./components/NavBar";
-import UpdateUserComponent from "./components/UpdateUserComponent";
-import LoginComponent from "./components/Login";
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import UserListComponent from "./component/list-user/UserListComponent";
+import CreateUserComponent from "./component/create-user/CreateUserComponent";
+import React, {useState} from "react";
+import UpdateUserComponent from "./component/update-user/UpdateUserComponent";
+import LoginComponent from "./component/login-user/LoginComponent";
+import UserHomeComponent from "./component/home-user/UserHomeComponent";
+import RegistrationComponent from "./component/registration-user/RegistrationComponent";
+import AdminRouteGuard from "./component/route-guard/AdminRouteGuard";
 
 function App() {
+
+    const role = localStorage.getItem('role');
+    const token = localStorage.getItem('token');
+
+    const isAuthorizedAsAdmin = () => {
+        if (token && role === "ADMIN") {
+            return true
+        }
+    }
+
+    const isAuthorizedAsUser = () => {
+        if (token && role === "USER") {
+            return true
+        }
+    }
 
     return (
         <div>
             <Router>
-                <NavBar/>
                 <div className="container">
                     <Switch>
-                        <Route exact path = "/" component = {UserListComponent}/>
-                        <Route exact path="/all" component={UserListComponent}/>
-                        <Route path="/new" component={CreateUserComponent}/>
-                        <Route path = "/update/:login" component = {UpdateUserComponent}/>
-                        <Route path = "/login" component = {LoginComponent}/>
+                        <Route path="/login" component={LoginComponent}/>
                     </Switch>
+                </div>
+                <div>
+                    <switch>
+                        <AdminRouteGuard path='/new' component={CreateUserComponent} auth={isAuthorizedAsAdmin()}
+                                         role={role}/>
+                        <AdminRouteGuard path="/home" component={UserHomeComponent} auth={isAuthorizedAsUser()}/>
+                        <AdminRouteGuard exact  path="/all" component={UserListComponent} auth={isAuthorizedAsAdmin()}/>
+                        <Route path="/update/:login" component={UpdateUserComponent}
+                               auth={isAuthorizedAsAdmin()}/>
+                        <Route path="/registration" component={RegistrationComponent}/>
+                    </switch>
                 </div>
             </Router>
         </div>
