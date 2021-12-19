@@ -9,7 +9,7 @@ import com.nixsolutions.crudapp.entity.User;
 import com.nixsolutions.crudapp.exception.FormProcessingException;
 import com.nixsolutions.crudapp.jwt.JwtTokenProvider;
 import com.nixsolutions.crudapp.mapper.UserMapper;
-import com.nixsolutions.crudapp.service.CaptchaService;
+import com.nixsolutions.crudapp.service.RoleService;
 import com.nixsolutions.crudapp.service.UserService;
 import com.nixsolutions.crudapp.util.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JwtTokenProvider tokenProvider;
     @Autowired
-    private CaptchaService captchaService;
+    private RoleService roleService;
 
     @Override
     public Map<String, String> create(User user) {
@@ -127,6 +127,7 @@ public class UserServiceImpl implements UserService {
             return invalidFields;
         }
         userDtoRegisterRequest.setPassword(passwordEncoder.encode(userDtoRegisterRequest.getPassword()));
+        userDtoRegisterRequest.setRole(roleService.findByName("USER").getName());
         userDao.create(userMapper.userFromUserDtoRegisterRequest(userDtoRegisterRequest));
         return invalidFields;
     }

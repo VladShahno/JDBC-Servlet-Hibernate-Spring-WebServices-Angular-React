@@ -2,7 +2,6 @@ package com.nixsolutions.crudapp.controller;
 
 import com.nixsolutions.crudapp.data.PublicUserDto;
 import com.nixsolutions.crudapp.data.UserDtoForCreate;
-import com.nixsolutions.crudapp.exception.FormProcessingException;
 import com.nixsolutions.crudapp.mapper.UserMapper;
 import com.nixsolutions.crudapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ public class RestController implements Controller {
     private UserMapper userMapper;
 
     @Autowired
-    ExceptionController exceptionController;
+    GlobalExceptionHandler exceptionHandler;
 
     public RestController() {
     }
@@ -50,10 +49,7 @@ public class RestController implements Controller {
             return Response.status(Response.Status.CREATED)
                     .entity(userDtoForCreate).build();
         } else {
-            return exceptionController.handleException(
-                    new FormProcessingException(
-                            invalidFields.values().toString(),
-                            invalidFields.keySet().toString()));
+            return exceptionHandler.handleException(invalidFields);
         }
     }
 
@@ -68,10 +64,7 @@ public class RestController implements Controller {
             return Response.status(Response.Status.OK).entity(userDtoForCreate)
                     .build();
         } else {
-            return exceptionController.handleException(
-                    new FormProcessingException(
-                            invalidFields.values().toString(),
-                            invalidFields.keySet().toString()));
+            return exceptionHandler.handleException(invalidFields);
         }
     }
 
