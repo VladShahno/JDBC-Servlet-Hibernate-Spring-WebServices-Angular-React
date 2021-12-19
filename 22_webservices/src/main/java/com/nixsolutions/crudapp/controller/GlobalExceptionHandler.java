@@ -8,21 +8,16 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class ExceptionController implements Controller {
+public class GlobalExceptionHandler implements Controller {
 
     @ExceptionHandler(FormProcessingException.class)
-    public Response handleException(FormProcessingException e) {
-        Map<String, String> invalidFields = new HashMap<>();
-        invalidFields.put(e.getAttributeName(), e.getMessage());
+    public Response handleException(Map<String, String> invalidFields) {
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity(invalidFields).build();
     }
-
 }
-
