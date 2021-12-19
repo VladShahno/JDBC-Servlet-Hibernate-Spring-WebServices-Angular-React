@@ -1,8 +1,6 @@
 package com.nixsolutions.crudapp.controller;
 
 import com.nixsolutions.crudapp.data.UserDtoRegisterRequest;
-import com.nixsolutions.crudapp.exception.FormProcessingException;
-import com.nixsolutions.crudapp.service.RoleService;
 import com.nixsolutions.crudapp.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,27 +26,19 @@ public class RegistrationController implements Controller {
     private UserService userService;
 
     @Autowired
-    private RoleService roleService;
-
-    @Autowired
-    private ExceptionController exceptionController;
+    private GlobalExceptionHandler exceptionHandler;
 
     @POST
     public Response postRegister(
             @Valid UserDtoRegisterRequest userDtoRegisterRequest) {
 
-        userDtoRegisterRequest.setRole(
-                roleService.findByName("USER").getName());
         Map<String, String> invalidFields = userService.register(
                 userDtoRegisterRequest);
         if (invalidFields.isEmpty()) {
             return Response.status(Response.Status.CREATED)
                     .entity(userDtoRegisterRequest).build();
         } else {
-            return exceptionController.handleException(
-                    new FormProcessingException(
-                            invalidFields.values().toString(),
-                            invalidFields.keySet().toString()));
+            return exceptionHandler.handleException(invalidFields);
         }
     }
 }
