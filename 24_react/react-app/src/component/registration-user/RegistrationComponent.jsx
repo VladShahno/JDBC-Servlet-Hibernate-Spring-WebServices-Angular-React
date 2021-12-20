@@ -17,7 +17,7 @@ const RegistrationComponent = () => {
     const [recaptchaResponse, setRecaptchaResponse]=  useState('')
 
     const history = useHistory();
-    const {formState: {errors}, handleSubmit} = useForm();
+    const {handleSubmit} = useForm();
     const [problems, setProblems] = useState(new Map());
 
     const saveUser = () => {

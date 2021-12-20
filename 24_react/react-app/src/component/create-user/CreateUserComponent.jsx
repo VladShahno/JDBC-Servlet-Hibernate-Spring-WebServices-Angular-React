@@ -15,7 +15,7 @@ const CreateUserComponent = () => {
     const [birthday, setBirthday] = useState('')
     const [role, setRole] = useState('')
     const history = useHistory();
-    const {formState: {errors}, handleSubmit} = useForm();
+    const {handleSubmit} = useForm();
     const [problems, setProblems] = useState(new Map());
 
     const saveUser = () => {
@@ -30,8 +30,6 @@ const CreateUserComponent = () => {
             birthday,
             role
         }
-        console.log(user);
-
         UserService.createUser(user).then((response) => {
             if (response.status === 201) {
                 history.push('/all')

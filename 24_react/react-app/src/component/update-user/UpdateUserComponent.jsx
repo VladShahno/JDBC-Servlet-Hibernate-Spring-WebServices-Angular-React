@@ -16,7 +16,7 @@ const UpdateUserComponent = () => {
     const [role, setRole] = useState('')
     const history = useHistory();
     const {login: login_update} = useParams();
-    const {formState: {errors}, handleSubmit} = useForm();
+    const {handleSubmit} = useForm();
     const [problems, setProblems] = useState(new Map());
 
     const UpdateUser = () => {
@@ -31,8 +31,6 @@ const UpdateUserComponent = () => {
             birthday,
             role
         }
-        console.log(user);
-
         UserService.updateUser(login_update, user).then((response) => {
 
             if (response.status === 200) {
