@@ -36,8 +36,8 @@ public class LoginController implements Controller {
                 userService.findByLogin(loginDto.getLogin()));
         if (user.isPresent()) {
             return Response.ok(userService.getToken(user.get())).build();
-        } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
         }
+        return Response.status(Response.Status.NOT_FOUND).build();
+
     }
 }
